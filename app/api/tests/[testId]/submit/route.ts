@@ -50,7 +50,7 @@ export async function POST(
   const { count: answeredCount } = await supabase
     .from('user_progress')
     .select('id', { count: 'exact', head: true })
-    .eq('test_id', params.testId)
+    .eq('test_id', testId)
 
   if (answeredCount === test.question_ids.length) {
     await supabase
