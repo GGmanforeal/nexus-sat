@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { testId: string } }
+  { params }: { params: Promise<{ testId: string }> }
 ) {
+  const { testId } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -14,7 +15,7 @@ export async function POST(
   const { data: test } = await supabase
     .from('practice_tests')
     .select('id,status,question_ids')
-    .eq('id', params.testId)
+    .eq('id', testId)
     .eq('user_id', user.id)
     .single()
 
@@ -36,7 +37,7 @@ export async function POST(
     .from('user_progress')
     .insert({
       user_id:         user.id,
-      test_id:         params.testId,
+      test_id:         testId,
       question_id,
       selected_answer,
       is_correct,
