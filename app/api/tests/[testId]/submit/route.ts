@@ -56,7 +56,7 @@ export async function POST(
     await supabase
       .from('practice_tests')
       .update({ status: 'completed', completed_at: new Date().toISOString() })
-      .eq('id', params.testId)
+      .eq('id', testId)
   }
 
   return NextResponse.json({
