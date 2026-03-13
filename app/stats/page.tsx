@@ -6,9 +6,9 @@ export default function StatsPage() {
   const { total, correct, wrong, acc, byDomain, bySection } = useStats()
 
   const domainRows = Object.entries(byDomain).map(([key, v]) => {
-    const [section, domain] = key.split('|||')
+    const [sec, domain] = key.split('|||')
     const pct = Math.round((v.correct / v.total) * 100)
-    return { section, domain, ...v, pct }
+    return { section: sec, domain, ...v, pct }
   }).sort((a, b) => a.pct - b.pct)
 
   const secEn   = bySection['English']
