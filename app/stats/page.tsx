@@ -8,7 +8,8 @@ export default function StatsPage() {
   const domainRows = Object.entries(byDomain).map(([key, v]) => {
     const [sec, domain] = key.split('|||')
     const pct = Math.round((v.correct / v.total) * 100)
-    return { section: sec, domain, ...v, pct }
+    const { section: _s, ...rest } = v
+    return { section: sec, domain, ...rest, pct }
   }).sort((a, b) => a.pct - b.pct)
 
   const secEn   = bySection['English']
