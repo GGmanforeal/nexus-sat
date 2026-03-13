@@ -1,96 +1,116 @@
-/* app/globals.css — Nexus design system */
+/* app/globals.css — Nexus design system v3 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Tokens ──────────────────────────────────────────────── */
+/* ── Design tokens ───────────────────────────────────────── */
 :root {
-  --lime:     #a3e635;
-  --lime-dk:  #84cc16;
-  --lime-dim: rgba(163,230,53,.10);
-  --nav-h:    52px;
-  --side-w:   272px;
-  --font: 'DM Sans', sans-serif;
-  --mono: 'DM Mono', monospace;
+  --lime:      #a3e635;
+  --lime-dk:   #84cc16;
+  --lime-dim:  rgba(163,230,53,.10);
+  --nav-h:     52px;
+  --side-w:    268px;
+  --font:      'DM Sans', sans-serif;
+  --mono:      'DM Mono', monospace;
+  --radius:    14px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.12);
+  --shadow-md: 0 8px 28px rgba(0,0,0,.22);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.35);
+  --transition: .15s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── Dark (default) ─────────────────────────────────────── */
+/* ── Dark theme (default) ────────────────────────────────── */
 :root, [data-theme="dark"] {
-  --bg:     #090d13;
-  --sf:     #0f1520;
-  --sf2:    #151d2b;
-  --sf3:    #1c2638;
-  --line:   rgba(255,255,255,.065);
-  --line2:  rgba(255,255,255,.12);
-  --tx:     #eef3ff;
-  --tx2:    #a8bbd4;
-  --tx3:    #5c7290;
-  --tx4:    #384d63;
-  --g-bg:   rgba(20,83,45,.22);
-  --g-ln:   rgba(74,222,128,.28);
-  --g-tx:   #4ade80;
-  --r-bg:   rgba(127,29,29,.22);
-  --r-ln:   rgba(248,113,113,.28);
-  --r-tx:   #f87171;
-  --a-bg:   rgba(120,53,15,.22);
-  --a-ln:   rgba(251,191,36,.28);
-  --a-tx:   #fbbf24;
+  --bg:    #090d13;
+  --sf:    #0e1520;
+  --sf2:   #141c2a;
+  --sf3:   #1a2436;
+  --line:  rgba(255,255,255,.06);
+  --line2: rgba(255,255,255,.11);
+  --tx:    #eef3ff;
+  --tx2:   #a0b4cc;
+  --tx3:   #556880;
+  --tx4:   #334055;
+  --g-bg:  rgba(16,80,42,.25);
+  --g-ln:  rgba(74,222,128,.25);
+  --g-tx:  #4ade80;
+  --r-bg:  rgba(120,28,28,.25);
+  --r-ln:  rgba(248,113,113,.25);
+  --r-tx:  #f87171;
+  --a-bg:  rgba(113,50,12,.25);
+  --a-ln:  rgba(251,191,36,.25);
+  --a-tx:  #fbbf24;
 }
 
-/* ── Light ──────────────────────────────────────────────── */
+/* ── Light theme ─────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg:     #f4f6fa;
-  --sf:     #ffffff;
-  --sf2:    #f0f3f8;
-  --sf3:    #e4e9f2;
-  --line:   #e1e7f0;
-  --line2:  #c8d2e0;
-  --tx:     #0d1626;
-  --tx2:    #334766;
-  --tx3:    #6b82a0;
-  --tx4:    #9db0c8;
-  --g-bg:   #f0fdf4;
-  --g-ln:   #86efac;
-  --g-tx:   #15803d;
-  --r-bg:   #fef2f2;
-  --r-ln:   #fca5a5;
-  --r-tx:   #b91c1c;
-  --a-bg:   #fffbeb;
-  --a-ln:   #fcd34d;
-  --a-tx:   #b45309;
+  --bg:    #f2f5fa;
+  --sf:    #ffffff;
+  --sf2:   #edf1f8;
+  --sf3:   #e2e8f2;
+  --line:  #dde4f0;
+  --line2: #c8d2e2;
+  --tx:    #0c1525;
+  --tx2:   #2e4466;
+  --tx3:   #647ea0;
+  --tx4:   #95aac4;
+  --g-bg:  #f0fdf4;
+  --g-ln:  #86efac;
+  --g-tx:  #15803d;
+  --r-bg:  #fef2f2;
+  --r-ln:  #fca5a5;
+  --r-tx:  #b91c1c;
+  --a-bg:  #fffbeb;
+  --a-ln:  #fcd34d;
+  --a-tx:  #b45309;
 }
 
-/* ── Base ───────────────────────────────────────────────── */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset & base ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--tx);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Scrollbars ─────────────────────────────────────────── */
+/* ── Scrollbars ──────────────────────────────────────────── */
 ::-webkit-scrollbar        { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track  { background: transparent; }
 ::-webkit-scrollbar-thumb  { background: var(--line2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tx4); }
 
-/* ── Utility classes ────────────────────────────────────── */
-.nexus-surface  { background: var(--sf);  border: 1px solid var(--line); }
-.nexus-surface2 { background: var(--sf2); border: 1px solid var(--line); }
-.nexus-lime     { background: var(--lime); color: #060a0e; }
-.nexus-lime:hover { background: var(--lime-dk); }
-.mono           { font-family: var(--mono); }
-
-/* fade-up animation */
+/* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeUp {
-  from { opacity:0; transform: translateY(8px); }
-  to   { opacity:1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up { animation: fadeUp .2s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .5; }
+}
 
-/* shimmer skeleton */
-@keyframes shimmer { to { background-position: -200% 0; } }
+/* ── Utility classes ─────────────────────────────────────── */
+.spinner {
+  width: 28px; height: 28px;
+  border: 2.5px solid var(--line2);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+  flex-shrink: 0;
+}
 .skeleton {
   background: linear-gradient(90deg, var(--sf2) 25%, var(--sf3) 50%, var(--sf2) 75%);
   background-size: 200% 100%;
@@ -98,78 +118,67 @@ html, body {
   border-radius: 6px;
 }
 
-/* spinner */
-@keyframes spin { to { transform: rotate(360deg); } }
-.spinner {
-  width: 28px; height: 28px;
-  border: 2.5px solid var(--line2);
-  border-top-color: var(--lime);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  flex-shrink: 0;
+/* ── Mobile bottom nav ───────────────────────────────────── */
+.mob-bottom-nav { display: none; }
+
+/* ── Safe area support (iPhone notch) ───────────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mob-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
 }
 
-/* choice states */
-.choice-default { border-color: var(--line); background: var(--sf); }
-.choice-default:hover { border-color: var(--lime-dk); background: var(--lime-dim); }
-.choice-selected { border-color: var(--lime); background: var(--lime-dim); }
-.choice-correct  { border-color: var(--g-tx); background: var(--g-bg); }
-.choice-wrong    { border-color: var(--r-tx); background: var(--r-bg); }
-.choice-dim      { opacity: .32; }
-
-/* bar fill colors */
-.bar-good   { background: var(--g-tx); }
-.bar-ok     { background: var(--a-tx); }
-.bar-bad    { background: var(--r-tx); }
-
-/* ── Mobile responsive ─────────────────────────────── */
+/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 700px) {
-  /* Show bottom nav */
+  /* Show mobile bottom nav */
   .mob-bottom-nav { display: flex !important; }
 
-  /* Hide top nav links — bottom nav used instead */
-  .nav-links { display: none !important; }
+  /* Hide desktop nav links */
+  .nav-links   { display: none !important; }
   .nav-divider { display: none !important; }
 
-  /* Hide sign up button on mobile — only show login or avatar */
+  /* On mobile only show Log in (not Sign up) in top bar */
   .nav-auth-btns a:last-child { display: none !important; }
 
-  /* Shrink login button text */
-  .nav-auth-btns a:first-child {
-    padding: 5px 9px !important;
-    font-size: 12px !important;
-  }
+  /* Body padding for bottom nav */
+  body { padding-bottom: max(64px, calc(64px + env(safe-area-inset-bottom))); }
 
-  /* Add padding so content isn't hidden behind bottom nav */
-  body { padding-bottom: 62px; }
-
-  /* Hide sidebar by default, slide in when open */
+  /* Sidebar: slide in from left */
   .sidebar {
     position: fixed !important;
     left: -100% !important;
     top: var(--nav-h) !important;
-    height: calc(100vh - var(--nav-h)) !important;
+    height: calc(100dvh - var(--nav-h)) !important;
     z-index: 300 !important;
-    transition: left .25s ease !important;
-    width: 85vw !important;
+    transition: left .22s cubic-bezier(.4,0,.2,1) !important;
+    width: 82vw !important;
     min-width: unset !important;
-    max-width: 320px !important;
-    box-shadow: 4px 0 24px rgba(0,0,0,.4) !important;
+    max-width: 310px !important;
+    box-shadow: 4px 0 28px rgba(0,0,0,.45) !important;
   }
-  .sidebar-open { left: 0 !important; }
-  .mob-overlay  { display: block !important; }
+  .sidebar-open  { left: 0 !important; }
+  .mob-overlay   { display: block !important; }
+  .mob-menu-btn  { display: flex !important; }
 
-  /* Page padding */
-  div[style*='maxWidth: 760'] { padding: 16px 14px 20px !important; }
+  /* Question padding tighter */
+  div[style*="maxWidth: 760"] { padding: 16px 14px 24px !important; }
+  div[style*="maxWidth: 900"] { padding: 20px 14px 24px !important; }
 
-  /* Stats grid 2 cols on mobile */
-  div[style*='gridTemplateColumns: repeat(4'] {
-    grid-template-columns: repeat(2, 1fr) !important;
+  /* Stats 4-col → 2-col */
+  div[style*="gridTemplateColumns: repeat(4"] {
+    grid-template-columns: repeat(2,1fr) !important;
   }
-
-  /* Grids → 1 col on mobile */
-  div[style*='gridTemplateColumns: repeat(2,1fr)'],
-  div[style*='gridTemplateColumns: repeat(2, 1fr)'] {
+  /* 2-col grids → 1-col */
+  div[style*="gridTemplateColumns: repeat(2,1fr)"],
+  div[style*="gridTemplateColumns: repeat(2, 1fr)"] {
     grid-template-columns: 1fr !important;
   }
+
+  /* Test run header */
+  div[style*="maxWidth: 900"] > div[style*="height: 46"] {
+    padding: 0 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even more compact on small phones */
+  .nav-wordmark { display: none; }
 }
