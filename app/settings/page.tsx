@@ -77,16 +77,28 @@ export default function SettingsPage() {
         body: JSON.stringify(body),
       })
       const data = await res.json()
-      if (data.error_description || data.error) setAuthMsg(data.error_description || data.error)
-      else {
+      // Detect "already registered" and give a clear message
+      const errMsg: string = data.error_description || data.error || data.msg || ''
+      if (errMsg) {
+        if (/already registered|user already exists|email.*taken/i.test(errMsg)) {
+          setAuthMsg('⚠️ An account with this email already exists. Please log in instead.')
+          setAuthMode('login')
+        } else {
+          setAuthMsg(errMsg)
+        }
+      } else {
         if (data.access_token) {
           const name = data.user?.user_metadata?.name || authEmail.split('@')[0]
           const u = { email: authEmail, name }
           localStorage.setItem('nexus_token', data.access_token)
           localStorage.setItem('nexus_user', JSON.stringify(u))
           setLoggedInUser(u)
+          // Dispatch event so Nav picks up the change
+          window.dispatchEvent(new Event('nexus_auth_change'))
           setAuthMsg('✓ Logged in successfully!')
-        } else setAuthMsg('✓ Check your email to confirm your account.')
+        } else {
+          setAuthMsg('✓ Check your email to confirm your account.')
+        }
       }
     } catch (e: any) {
       setAuthMsg(e.message || 'Auth failed.')

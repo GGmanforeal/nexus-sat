@@ -124,14 +124,24 @@ html, body {
 
 /* ── Mobile responsive ─────────────────────────────── */
 @media (max-width: 700px) {
-  /* Show hamburger button */
-  .mob-menu-btn { display: flex !important; }
-
   /* Show bottom nav */
   .mob-bottom-nav { display: flex !important; }
 
+  /* Hide top nav links — bottom nav used instead */
+  .nav-links { display: none !important; }
+  .nav-divider { display: none !important; }
+
+  /* Hide sign up button on mobile — only show login or avatar */
+  .nav-auth-btns a:last-child { display: none !important; }
+
+  /* Shrink login button text */
+  .nav-auth-btns a:first-child {
+    padding: 5px 9px !important;
+    font-size: 12px !important;
+  }
+
   /* Add padding so content isn't hidden behind bottom nav */
-  main { padding-bottom: 70px !important; }
+  body { padding-bottom: 62px; }
 
   /* Hide sidebar by default, slide in when open */
   .sidebar {
@@ -146,30 +156,19 @@ html, body {
     max-width: 320px !important;
     box-shadow: 4px 0 24px rgba(0,0,0,.4) !important;
   }
-  .sidebar-open {
-    left: 0 !important;
-  }
-  .mob-overlay { display: block !important; }
+  .sidebar-open { left: 0 !important; }
+  .mob-overlay  { display: block !important; }
 
-  /* Question area padding */
-  div[style*='maxWidth: 760'] {
-    padding: 16px 14px 60px !important;
-  }
-
-  /* Nav links — hide text, show icons or abbreviate */
-  nav a span { display: none; }
+  /* Page padding */
+  div[style*='maxWidth: 760'] { padding: 16px 14px 20px !important; }
 
   /* Stats grid 2 cols on mobile */
   div[style*='gridTemplateColumns: repeat(4'] {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  /* Section bars 1 col on mobile */
-  div[style*='gridTemplateColumns: repeat(2,1fr)'] {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Test cards 1 col on mobile */
+  /* Grids → 1 col on mobile */
+  div[style*='gridTemplateColumns: repeat(2,1fr)'],
   div[style*='gridTemplateColumns: repeat(2, 1fr)'] {
     grid-template-columns: 1fr !important;
   }
