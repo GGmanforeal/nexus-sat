@@ -10,9 +10,11 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [authEmail, setAuthEmail] = useState('')
   const [authPass, setAuthPass]   = useState('')
+  const [authName, setAuthName]   = useState('')
   const [authMode, setAuthMode]   = useState<'login' | 'signup'>('login')
   const [authMsg, setAuthMsg]     = useState('')
   const [authLoading, setAuthLoading] = useState(false)
+  const [loggedInUser, setLoggedInUser] = useState<{ email: string; name: string } | null>(null)
 
   // Admin gate
   const [adminUnlocked, setAdminUnlocked] = useState(false)
@@ -20,12 +22,17 @@ export default function SettingsPage() {
   const [pinError, setPinError]           = useState(false)
   const [showPinField, setShowPinField]   = useState(false)
 
+  const SUPABASE_URL = 'https://cxeeqxxvuyrhlpindljk.supabase.co'
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4ZWVxeHh2dXlyaGxwaW5kbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTMxNzEsImV4cCI6MjA4ODcyOTE3MX0.ZF5cOKLnvsTzM6xptsO-aiRtq1mfPs8KjOoaaQdCc8M'
+
   useEffect(() => {
     const raw = localStorage.getItem('nexus_creds')
     if (raw) setCreds(JSON.parse(raw))
     const t = (localStorage.getItem('nexus_theme') as 'dark' | 'light') || 'dark'
     setTheme(t)
     if (sessionStorage.getItem('nexus_admin') === '1') setAdminUnlocked(true)
+    const u = localStorage.getItem('nexus_user')
+    if (u) setLoggedInUser(JSON.parse(u))
   }, [])
 
   const tryPin = () => {
@@ -58,20 +65,26 @@ export default function SettingsPage() {
 
   const doAuth = async () => {
     if (!authEmail || !authPass) { setAuthMsg('Enter email and password.'); return }
-    if (!creds) { setAuthMsg('Connect your Supabase database first.'); return }
+    if (authMode === 'signup' && !authName) { setAuthMsg('Enter your name.'); return }
     setAuthLoading(true); setAuthMsg('')
     const endpoint = authMode === 'login' ? 'token?grant_type=password' : 'signup'
     try {
-      const res = await fetch(`${creds.url}/auth/v1/${endpoint}`, {
+      const body: any = { email: authEmail, password: authPass }
+      if (authMode === 'signup') body.data = { name: authName }
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
         method: 'POST',
-        headers: { apikey: creds.key, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: authEmail, password: authPass }),
+        headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       })
       const data = await res.json()
       if (data.error_description || data.error) setAuthMsg(data.error_description || data.error)
       else {
         if (data.access_token) {
+          const name = data.user?.user_metadata?.name || authEmail.split('@')[0]
+          const u = { email: authEmail, name }
           localStorage.setItem('nexus_token', data.access_token)
+          localStorage.setItem('nexus_user', JSON.stringify(u))
+          setLoggedInUser(u)
           setAuthMsg('✓ Logged in successfully!')
         } else setAuthMsg('✓ Check your email to confirm your account.')
       }
@@ -80,6 +93,13 @@ export default function SettingsPage() {
     } finally {
       setAuthLoading(false)
     }
+  }
+
+  const logout = () => {
+    localStorage.removeItem('nexus_token')
+    localStorage.removeItem('nexus_user')
+    setLoggedInUser(null)
+    setAuthMsg('')
   }
 
   return (
@@ -136,35 +156,57 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Auth */}
-      <Group title="Authentication">
+      {/* Auth / Profile */}
+      <Group title="Account">
         <div style={{ padding: '16px 18px' }}>
-          <p style={{ fontSize: 13, color: 'var(--tx3)', marginBottom: 16, lineHeight: 1.6 }}>
-            Supabase Auth lets you persist stats across devices. Enable Email provider in your Supabase dashboard → Authentication → Providers.
-          </p>
-          <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-            {(['login', 'signup'] as const).map(m => (
-              <button key={m} onClick={() => setAuthMode(m)} style={{
-                padding: '5px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
-                background: authMode === m ? 'var(--lime)' : 'var(--sf3)',
-                color: authMode === m ? '#060a0e' : 'var(--tx3)',
-                border: 'none', cursor: 'pointer',
-              }}>{m === 'login' ? 'Log in' : 'Sign up'}</button>
-            ))}
-          </div>
-          <input value={authEmail} onChange={e => setAuthEmail(e.target.value)} placeholder="Email"
-            style={inputStyle} type="email" />
-          <input value={authPass} onChange={e => setAuthPass(e.target.value)} placeholder="Password"
-            style={{ ...inputStyle, marginTop: 8 }} type="password" />
-          {authMsg && (
-            <div style={{ fontSize: 12.5, padding: '8px 12px', borderRadius: 8, marginTop: 10,
-              background: authMsg.startsWith('✓') ? 'var(--g-bg)' : 'var(--r-bg)',
-              color: authMsg.startsWith('✓') ? 'var(--g-tx)' : 'var(--r-tx)',
-              border: `1px solid ${authMsg.startsWith('✓') ? 'var(--g-ln)' : 'var(--r-ln)'}` }}>{authMsg}</div>
+          {loggedInUser ? (
+            <>
+              {/* Profile card */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+                <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#060a0e', flexShrink: 0 }}>
+                  {loggedInUser.name.slice(0,2).toUpperCase()}
+                </div>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--tx)' }}>{loggedInUser.name}</div>
+                  <div style={{ fontSize: 13, color: 'var(--tx3)', marginTop: 2 }}>{loggedInUser.email}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <a href="/stats" style={{ padding: '8px 16px', background: 'var(--sf3)', color: 'var(--tx2)', border: '1px solid var(--line2)', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>📊 My Stats</a>
+                <button onClick={logout} style={{ padding: '8px 16px', background: 'var(--r-bg)', color: 'var(--r-tx)', border: '1px solid var(--r-ln)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>🚪 Log out</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                {(['login', 'signup'] as const).map(m => (
+                  <button key={m} onClick={() => setAuthMode(m)} style={{
+                    padding: '5px 14px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
+                    background: authMode === m ? 'var(--lime)' : 'var(--sf3)',
+                    color: authMode === m ? '#060a0e' : 'var(--tx3)',
+                    border: 'none', cursor: 'pointer',
+                  }}>{m === 'login' ? 'Log in' : 'Sign up'}</button>
+                ))}
+              </div>
+              {authMode === 'signup' && (
+                <input value={authName} onChange={e => setAuthName(e.target.value)} placeholder="Your name"
+                  style={{ ...inputStyle, marginBottom: 8 }} />
+              )}
+              <input value={authEmail} onChange={e => setAuthEmail(e.target.value)} placeholder="Email"
+                style={inputStyle} type="email" />
+              <input value={authPass} onChange={e => setAuthPass(e.target.value)} placeholder="Password"
+                style={{ ...inputStyle, marginTop: 8 }} type="password" />
+              {authMsg && (
+                <div style={{ fontSize: 12.5, padding: '8px 12px', borderRadius: 8, marginTop: 10,
+                  background: authMsg.startsWith('✓') ? 'var(--g-bg)' : 'var(--r-bg)',
+                  color: authMsg.startsWith('✓') ? 'var(--g-tx)' : 'var(--r-tx)',
+                  border: `1px solid ${authMsg.startsWith('✓') ? 'var(--g-ln)' : 'var(--r-ln)'}` }}>{authMsg}</div>
+              )}
+              <button onClick={doAuth} style={{ marginTop: 12, padding: '9px 20px', background: 'var(--lime)', color: '#060a0e', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer' }}>
+                {authLoading ? 'Working…' : authMode === 'login' ? 'Log in →' : 'Create account →'}
+              </button>
+            </>
           )}
-          <button onClick={doAuth} style={{ marginTop: 12, padding: '9px 20px', background: 'var(--lime)', color: '#060a0e', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer' }}>
-            {authLoading ? 'Working…' : authMode === 'login' ? 'Log in →' : 'Create account →'}
-          </button>
         </div>
       </Group>
 

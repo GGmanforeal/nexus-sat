@@ -127,6 +127,12 @@ html, body {
   /* Show hamburger button */
   .mob-menu-btn { display: flex !important; }
 
+  /* Show bottom nav */
+  .mob-bottom-nav { display: flex !important; }
+
+  /* Add padding so content isn't hidden behind bottom nav */
+  main { padding-bottom: 70px !important; }
+
   /* Hide sidebar by default, slide in when open */
   .sidebar {
     position: fixed !important;

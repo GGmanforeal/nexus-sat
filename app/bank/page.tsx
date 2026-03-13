@@ -372,7 +372,11 @@ export default function BankPage() {
                     Next →
                   </button>
                 ) : null}
-                <button onClick={() => q && setSaved(s => { const n = new Set(s); n.has(q.id) ? n.delete(q.id) : n.add(q.id); return n })}
+                <button onClick={() => {
+                  if (!q || !submitted) return
+                  const existing = sessionStore.get().answered.find(a => a.questionId === q.id)
+                  if (existing) sessionStore.toggleSaved(existing)
+                }}
                   title="Bookmark (S)"
                   style={{ width: 36, height: 36, borderRadius: 8, fontSize: 16, border: `1px solid ${q && saved.has(q.id) ? 'var(--lime)' : 'var(--line2)'}`, background: q && saved.has(q.id) ? 'var(--lime-dim)' : 'var(--sf2)', color: q && saved.has(q.id) ? 'var(--lime-dk)' : 'var(--tx3)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   🔖
