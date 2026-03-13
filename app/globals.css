@@ -121,3 +121,50 @@ html, body {
 .bar-good   { background: var(--g-tx); }
 .bar-ok     { background: var(--a-tx); }
 .bar-bad    { background: var(--r-tx); }
+
+/* ── Mobile responsive ─────────────────────────────── */
+@media (max-width: 700px) {
+  /* Show hamburger button */
+  .mob-menu-btn { display: flex !important; }
+
+  /* Hide sidebar by default, slide in when open */
+  .sidebar {
+    position: fixed !important;
+    left: -100% !important;
+    top: var(--nav-h) !important;
+    height: calc(100vh - var(--nav-h)) !important;
+    z-index: 300 !important;
+    transition: left .25s ease !important;
+    width: 85vw !important;
+    min-width: unset !important;
+    max-width: 320px !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,.4) !important;
+  }
+  .sidebar-open {
+    left: 0 !important;
+  }
+  .mob-overlay { display: block !important; }
+
+  /* Question area padding */
+  div[style*='maxWidth: 760'] {
+    padding: 16px 14px 60px !important;
+  }
+
+  /* Nav links — hide text, show icons or abbreviate */
+  nav a span { display: none; }
+
+  /* Stats grid 2 cols on mobile */
+  div[style*='gridTemplateColumns: repeat(4'] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Section bars 1 col on mobile */
+  div[style*='gridTemplateColumns: repeat(2,1fr)'] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Test cards 1 col on mobile */
+  div[style*='gridTemplateColumns: repeat(2, 1fr)'] {
+    grid-template-columns: 1fr !important;
+  }
+}

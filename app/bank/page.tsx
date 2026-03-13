@@ -20,6 +20,13 @@ function supaFetch(url: string, key: string, table: string, opts: {
 interface Creds { url: string; key: string; table: string }
 const LABELS = ['A', 'B', 'C', 'D']
 
+// ── Hardcoded public credentials (read-only anon key) ────────
+const DEFAULT_CREDS: Creds = {
+  url: 'https://cxeeqxxvuyrhlpindljk.supabase.co',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4ZWVxeHh2dXlyaGxwaW5kbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTMxNzEsImV4cCI6MjA4ODcyOTE3MX0.ZF5cOKLnvsTzM6xptsO-aiRtq1mfPs8KjOoaaQdCc8M',
+  table: 'sat_questions',
+}
+
 /* ── Clock ─────────────────────────────────────────────────── */
 function Clock() {
   const [time, setTime] = useState('')
@@ -52,11 +59,14 @@ export default function BankPage() {
   const [correct, setCorrect]     = useState(0)
   const [wrong, setWrong]         = useState(0)
 
+  const [sideOpen, setSideOpen] = useState(false)
+
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('nexus_admin') === '1')
+    // Use saved creds or fall back to default
     const raw = localStorage.getItem('nexus_creds')
-    if (!raw) return
-    const c: Creds = JSON.parse(raw)
+    const c: Creds = raw ? JSON.parse(raw) : DEFAULT_CREDS
+    if (!raw) localStorage.setItem('nexus_creds', JSON.stringify(DEFAULT_CREDS))
     setCreds(c); setConnected('checking')
     supaFetch(c.url, c.key, c.table, { select: 'id', limit: 1 })
       .then(d => { if (Array.isArray(d)) { setConnected('live'); buildTree(c) } else setConnected('err') })
@@ -156,10 +166,13 @@ export default function BankPage() {
   }
 
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - var(--nav-h))', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: 'calc(100vh - var(--nav-h))', overflow: 'hidden', position: 'relative' }}>
+
+      {/* ── MOBILE SIDEBAR OVERLAY ───────────────────── */}
+      {sideOpen && <div onClick={() => setSideOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'none' }} className="mob-overlay" />}
 
       {/* ── SIDEBAR ──────────────────────────────────── */}
-      <aside style={{ width: 'var(--side-w)', minWidth: 'var(--side-w)', borderRight: '1px solid var(--line)', background: 'var(--sf)', display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <aside className={`sidebar${sideOpen ? ' sidebar-open' : ''}`} style={{ width: 'var(--side-w)', minWidth: 'var(--side-w)', borderRight: '1px solid var(--line)', background: 'var(--sf)', display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Connection */}
         <div style={{ padding: '9px 13px', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: 7, fontSize: 12 }}>
           <div style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0, background: connected === 'live' ? 'var(--lime)' : connected === 'err' ? 'var(--r-tx)' : 'var(--tx4)', boxShadow: connected === 'live' ? '0 0 7px rgba(163,230,53,.4)' : 'none' }} />
@@ -225,8 +238,10 @@ export default function BankPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: 'var(--bg)' }}>
 
         {/* Top bar */}
-        <div style={{ height: 42, borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', padding: '0 22px', gap: 10, background: 'var(--sf)', flexShrink: 0 }}>
-          <div style={{ flex: 1, fontSize: 12, color: 'var(--tx3)', display: 'flex', gap: 5, alignItems: 'center' }}>
+        <div style={{ height: 42, borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8, background: 'var(--sf)', flexShrink: 0 }}>
+          {/* Mobile sidebar toggle */}
+          <button onClick={() => setSideOpen(o => !o)} className="mob-menu-btn" style={{ width: 32, height: 32, borderRadius: 7, border: '1px solid var(--line2)', background: 'var(--sf2)', fontSize: 16, cursor: 'pointer', display: 'none', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>☰</button>
+          <div style={{ flex: 1, fontSize: 12, color: 'var(--tx3)', display: 'flex', gap: 5, alignItems: 'center', overflow: 'hidden' }}>
             {q ? (<>
               <span>{/math/i.test(q.section) ? 'Math' : 'Reading & Writing'}</span>
               {q.domain && <><span style={{ color: 'var(--tx4)' }}>›</span><b style={{ color: 'var(--tx2)', fontWeight: 600 }}>{q.domain}</b></>}

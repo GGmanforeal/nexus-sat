@@ -61,7 +61,7 @@ export function Nav() {
       <div style={{ width: 1, height: 22, background: 'var(--line2)', margin: '0 8px', flexShrink: 0 }} />
 
       {/* Links */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, overflow: 'auto', scrollbarWidth: 'none' }}>
         {LINKS.map(({ href, label }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
           return (

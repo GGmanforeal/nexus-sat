@@ -17,9 +17,9 @@ export default function TestsPage() {
 
   const start = async (cfg: typeof CONFIGS[0]) => {
     setStarting(cfg.id); setError('')
+    const DEFAULT = { url: 'https://cxeeqxxvuyrhlpindljk.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4ZWVxeHh2dXlyaGxwaW5kbGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTMxNzEsImV4cCI6MjA4ODcyOTE3MX0.ZF5cOKLnvsTzM6xptsO-aiRtq1mfPs8KjOoaaQdCc8M', table: 'sat_questions' }
     const raw = localStorage.getItem('nexus_creds')
-    if (!raw) { setError('Connect your database first — go to Question Bank and click Connect.'); setStarting(null); return }
-    const { url, key, table } = JSON.parse(raw)
+    const { url, key, table } = raw ? JSON.parse(raw) : DEFAULT
     try {
       let allQs: any[] = []
       for (const secLabel of cfg.sections) {
