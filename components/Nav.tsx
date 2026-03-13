@@ -18,7 +18,6 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 export function Nav() {
   const pathname = usePathname()
-  const router = useRouter()
   const [theme, setTheme]       = useState<'dark' | 'light'>('dark')
   const [user, setUser]         = useState<{ email: string; name: string } | null>(null)
   const [dropOpen, setDropOpen] = useState(false)
