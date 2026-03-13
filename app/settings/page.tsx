@@ -202,7 +202,7 @@ function Row({ label, desc, children }: { label: string; desc?: string; children
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid var(--line)' }}>
       <div>
         <div style={{ fontSize: 13.5, color: 'var(--tx)' }}>{label}</div>
-        {desc && <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 2, fontFamily: desc.startsWith('http') ? 'var(--mono)' : 'inherit', fontSize: 12 }}>{desc}</div>}
+        {desc && <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 2, fontFamily: desc.startsWith('http') ? 'var(--mono)' : 'inherit' }}>{desc}</div>}
       </div>
       {children}
     </div>
