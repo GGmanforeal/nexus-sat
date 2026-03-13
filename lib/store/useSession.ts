@@ -6,7 +6,8 @@ import { sessionStore, SessionStore } from './session'
 export function useSession(): SessionStore {
   const [snap, setSnap] = useState<SessionStore>(() => sessionStore.get())
   useEffect(() => {
-    return sessionStore.subscribe(() => setSnap({ ...sessionStore.get() }))
+    const unsub = sessionStore.subscribe(() => setSnap({ ...sessionStore.get() }))
+    return () => unsub()
   }, [])
   return snap
 }
