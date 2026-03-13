@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Question } from '@/lib/types'
 import { MathText } from '@/components/MathText'
+import { sessionStore } from '@/lib/store/session'
 
 const LABELS = ['A','B','C','D']
 
@@ -51,9 +52,26 @@ export default function TestRunPage() {
 
   const confirm = useCallback(() => {
     if (!sel || submitted || !qs[idx]) return
-    const isCorrect = sel === qs[idx].correct_answer
+    const q = qs[idx]
+    const isCorrect = sel === q.correct_answer
     setSubmitted(true)
     if (isCorrect) setCorrect(c => c + 1); else setWrong(c => c + 1)
+    sessionStore.addAnswer({
+      questionId: q.id,
+      section: q.section,
+      domain: q.domain || '',
+      skill: q.skill || '',
+      difficulty: q.difficulty || '',
+      selectedAnswer: sel,
+      correctAnswer: q.correct_answer,
+      isCorrect,
+      explanation: q.explanation || '',
+      question_text: q.question_text,
+      choice_a: q.choice_a,
+      choice_b: q.choice_b,
+      choice_c: q.choice_c,
+      choice_d: q.choice_d,
+    })
   }, [sel, submitted, qs, idx])
 
   useEffect(() => {

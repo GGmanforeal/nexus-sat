@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Question, TreeData, TreeDomain } from '@/lib/types'
 import { MathText } from '@/components/MathText'
+import { sessionStore } from '@/lib/store/session'
 
 /* ── Supabase REST ─────────────────────────────────────────── */
 function supaFetch(url: string, key: string, table: string, opts: {
@@ -60,6 +61,14 @@ export default function BankPage() {
   const [wrong, setWrong]         = useState(0)
 
   const [sideOpen, setSideOpen] = useState(false)
+  // Sync saved state from persistent store on mount
+  useEffect(() => {
+    const s = sessionStore.get().saved
+    setSaved(new Set(Object.keys(s)))
+    return sessionStore.subscribe(() => {
+      setSaved(new Set(Object.keys(sessionStore.get().saved)))
+    })
+  }, [])
 
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('nexus_admin') === '1')
@@ -105,8 +114,8 @@ export default function BankPage() {
     let items: Question[] = Array.isArray(data) ? data : []
     // Client-side section filter — avoids DB exact-match issues
     items = items.filter(q => useSec === 'Math' ? /math/i.test(q.section) : !/math/i.test(q.section))
-    if (shuffle) items = [...items].sort(() => Math.random() - .5)
-    setQs(items); setLoadingQs(false)
+    const sorted = shuffle ? [...items].sort(() => Math.random() - .5) : items
+    setQs(sorted); setLoadingQs(false)
   }, [creds, sec, diff, shuffle])
 
   const tryConnect = async (url: string, key: string, table: string) => {
@@ -120,12 +129,30 @@ export default function BankPage() {
 
   const goTo = (i: number) => { setIdx(i); setSel(null); setSubmitted(false) }
 
-  const confirm = () => {
+  const confirm = useCallback(() => {
     if (!sel || submitted || !qs[idx]) return
-    const isCorrect = sel === qs[idx].correct_answer
+    const q = qs[idx]
+    const isCorrect = sel === q.correct_answer
     setSubmitted(true)
     if (isCorrect) setCorrect(c => c + 1); else setWrong(c => c + 1)
-  }
+    // Save to persistent store
+    sessionStore.addAnswer({
+      questionId: q.id,
+      section: q.section,
+      domain: q.domain || '',
+      skill: q.skill || '',
+      difficulty: q.difficulty || '',
+      selectedAnswer: sel,
+      correctAnswer: q.correct_answer,
+      isCorrect,
+      explanation: q.explanation || '',
+      question_text: q.question_text,
+      choice_a: q.choice_a,
+      choice_b: q.choice_b,
+      choice_c: q.choice_c,
+      choice_d: q.choice_d,
+    })
+  }, [sel, submitted, qs, idx])
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {

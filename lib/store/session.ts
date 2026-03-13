@@ -1,6 +1,5 @@
 // lib/store/session.ts
-// Lightweight in-memory session store — shared across all pages in the same tab
-// No external deps needed (pure React context + localStorage)
+// Persistent store — saves to localStorage so data survives page refresh / phone close
 
 export interface AnswerLog {
   questionId: string
@@ -21,12 +20,27 @@ export interface AnswerLog {
 
 export interface SessionStore {
   answered: AnswerLog[]
-  saved: Record<string, AnswerLog>  // questionId → question
+  saved: Record<string, AnswerLog>
 }
 
-// Singleton in-memory store — persists while the tab is open
+const STORAGE_KEY = 'nexus_session_v2'
+
+function load(): SessionStore {
+  if (typeof window === 'undefined') return { answered: [], saved: {} }
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch {}
+  return { answered: [], saved: {} }
+}
+
+function save(data: SessionStore) {
+  if (typeof window === 'undefined') return
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch {}
+}
+
 class Store {
-  private data: SessionStore = { answered: [], saved: {} }
+  private data: SessionStore = load()
   private listeners: Set<() => void> = new Set()
 
   subscribe(fn: () => void): () => void {
@@ -35,6 +49,7 @@ class Store {
   }
 
   private notify() {
+    save(this.data)
     this.listeners.forEach(fn => fn())
   }
 
@@ -43,7 +58,14 @@ class Store {
   }
 
   addAnswer(log: AnswerLog) {
-    this.data.answered.push(log)
+    // Avoid duplicate answers for same question in same session
+    const exists = this.data.answered.some(a => a.questionId === log.questionId)
+    if (!exists) this.data.answered.push(log)
+    else {
+      // Update existing entry
+      const i = this.data.answered.findIndex(a => a.questionId === log.questionId)
+      this.data.answered[i] = log
+    }
     this.notify()
   }
 
