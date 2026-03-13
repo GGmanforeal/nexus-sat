@@ -128,7 +128,7 @@ export default function TestRunPage() {
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       {/* Header */}
       <div style={{ borderBottom: '1px solid var(--line)', background: 'var(--sf)', padding: '0 24px', height: 46, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <button onClick={() => { if (confirm('Exit test? Progress will be lost.')) router.push('/tests') }}
+        <button onClick={() => { const ok = window.confirm('Exit test? Progress will be lost.'); if (ok) router.push('/tests') }}
           style={{ fontSize: 12, color: 'var(--tx3)', border: 'none', background: 'none', cursor: 'pointer', flexShrink: 0 }}>← Exit</button>
         <div style={{ flex: 1, fontSize: 13, fontWeight: 600, color: 'var(--tx2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</div>
         {timeLeft !== null && (
