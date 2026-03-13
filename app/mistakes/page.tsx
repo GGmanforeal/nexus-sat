@@ -1,7 +1,7 @@
 'use client'
 // app/mistakes/page.tsx — with delete individual + clear all
 import { useSession } from '@/lib/store/useSession'
-import { sessionStore, AnswerLog } from '@/lib/store/session'
+import { sessionStore } from '@/lib/store/session'
 import { useState } from 'react'
 
 const LABELS = ['A', 'B', 'C', 'D']

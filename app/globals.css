@@ -139,7 +139,7 @@ html, body {
   .nav-auth-btns a:last-child { display: none !important; }
 
   /* Body padding for bottom nav */
-  body { padding-bottom: max(64px, calc(64px + env(safe-area-inset-bottom))); }
+  body { padding-bottom: 64px; }
 
   /* Sidebar: slide in from left */
   .sidebar {
