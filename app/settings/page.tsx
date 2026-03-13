@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { sessionStore } from '@/lib/store/session'
 
-const ADMIN_PIN = 'nevergonnagiveyouup' // ← change this to your own secret PIN
+const ADMIN_PIN = 'nexus2025' // your private PIN
 
 export default function SettingsPage() {
   const [creds, setCreds] = useState<{ url: string; key: string; table: string } | null>(null)
@@ -16,7 +16,7 @@ export default function SettingsPage() {
   const [authLoading, setAuthLoading] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState<{ email: string; name: string } | null>(null)
 
-  // Admin gate
+  // Admin gate — invisible, Ctrl+Shift+A reveals
   const [adminUnlocked, setAdminUnlocked] = useState(false)
   const [pinInput, setPinInput]           = useState('')
   const [pinError, setPinError]           = useState(false)
@@ -33,6 +33,9 @@ export default function SettingsPage() {
     if (sessionStorage.getItem('nexus_admin') === '1') setAdminUnlocked(true)
     const u = localStorage.getItem('nexus_user')
     if (u) setLoggedInUser(JSON.parse(u))
+    const hk = (e: KeyboardEvent) => { if (e.ctrlKey && e.shiftKey && e.key === 'A') setShowPinField(v => !v) }
+    window.addEventListener('keydown', hk)
+    return () => window.removeEventListener('keydown', hk)
   }, [])
 
   const tryPin = () => {
