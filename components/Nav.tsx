@@ -19,8 +19,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 export function Nav() {
   const pathname = usePathname()
   const [theme, setTheme]       = useState<'dark' | 'light'>('dark')
-  // null = not yet checked, false = not logged in, object = logged in
-  const [user, setUser]         = useState<{ email: string; name: string } | null | false>(false)
+  const [user, setUser]         = useState<{ email: string; name: string } | null>(null)
   const [mounted, setMounted]   = useState(false)
   const [dropOpen, setDropOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
@@ -87,7 +86,7 @@ export function Nav() {
     setUser(null); setDropOpen(false)
   }
 
-  const userObj = user && user !== false ? user : null
+  const userObj = user
   const initials = userObj?.name ? userObj.name.slice(0, 2).toUpperCase() : ''
 
   return (
