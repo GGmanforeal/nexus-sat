@@ -116,14 +116,15 @@ export default function BankPage() {
   }, [])
 
   const buildTree = useCallback(async (c: Creds) => {
-    const data = await supaFetch(c, {select:'section,domain,skill',limit:5000})
+    // Fetch ALL questions for tree — no limit so new skills always appear
+    const data = await supaFetch(c, {select:'section,domain,skill', limit:10000})
     if (!Array.isArray(data)) return
     const map: Record<string,Record<string,Record<string,number>>> = {English:{},Math:{}}
     data.forEach((r: any) => {
-      const rawSec = /math/i.test(r.section) ? 'Math' : 'English'
+      // 'EBRW' and anything non-Math → English tab
+      const rawSec = (r.section === 'Math') ? 'Math' : 'English'
       const domain = r.domain || 'Other'
       const skill  = r.skill  || ''
-      // Reclassify "Problem Solving and Data Analysis" → Math
       const s = (rawSec === 'English' && isMathDomain(domain)) ? 'Math' : rawSec
       if (!map[s][domain]) map[s][domain] = {_total:0}
       map[s][domain]._total = (map[s][domain]._total||0)+1
@@ -156,9 +157,9 @@ export default function BankPage() {
     })
     let items: Question[] = Array.isArray(data) ? data : []
 
-    // Filter by section — also reclassify PSDA
+    // Filter by section — 'Math' only for Math tab, everything else (EBRW etc) → English
     items = items.filter(q => {
-      const qSec = isMathDomain(q.domain||'') ? 'Math' : (/math/i.test(q.section) ? 'Math' : 'English')
+      const qSec = isMathDomain(q.domain||'') ? 'Math' : (q.section === 'Math' ? 'Math' : 'English')
       return qSec === useSec
     })
 
@@ -464,7 +465,7 @@ export default function BankPage() {
                 <span style={{padding:'3px 9px',borderRadius:6,fontSize:11,fontWeight:600,
                   background:/math/i.test(q.section)||isMathDomain(q.domain||'')?'rgba(37,99,235,.14)':'rgba(124,58,237,.14)',
                   color:/math/i.test(q.section)||isMathDomain(q.domain||'')?'#60a5fa':'#a78bfa'}}>
-                  {/math/i.test(q.section)||isMathDomain(q.domain||'')?'Math':'Reading & Writing'}
+                  {q.section==='Math'||isMathDomain(q.domain||'')?'Math':'Reading & Writing'}
                 </span>
                 {q.domain&&<span style={{padding:'3px 9px',borderRadius:6,fontSize:11,fontWeight:600,background:'var(--sf3)',color:'var(--tx2)'}}>{q.domain}</span>}
                 {q.skill&&<span style={{padding:'3px 9px',borderRadius:6,fontSize:11,background:'var(--sf3)',color:'var(--tx3)'}}>{q.skill}</span>}
