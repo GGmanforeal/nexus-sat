@@ -131,12 +131,12 @@ html, body {
   /* Show mobile bottom nav */
   .mob-bottom-nav { display: flex !important; }
 
-  /* Hide desktop nav links */
-  .nav-links   { display: none !important; }
-  .nav-divider { display: none !important; }
+  /* Hide ALL desktop nav elements on mobile — only logo + theme/auth remain */
+  .nav-links      { display: none !important; }
+  .nav-divider    { display: none !important; }
 
-  /* On mobile only show Log in (not Sign up) in top bar */
-  .nav-auth-btns a:last-child { display: none !important; }
+  /* On mobile hide both auth buttons — bottom nav handles navigation */
+  .nav-auth-btns  { display: none !important; }
 
   /* Body padding for bottom nav */
   body { padding-bottom: 64px; }

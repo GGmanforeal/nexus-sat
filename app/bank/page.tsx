@@ -359,7 +359,7 @@ export default function BankPage() {
               <div key={di} style={{borderBottom:'1px solid var(--line)'}}>
                 <div onClick={()=>{setActDom(dom.name);actDomRef.current=dom.name;setActSk(null);actSkRef.current=null;loadQs(dom.name,null)}}
                   style={{display:'flex',alignItems:'center',gap:8,padding:'10px 12px',cursor:'pointer',background:open&&!actSk?'var(--lime-dim)':'transparent',transition:'background .1s'}}>
-                  <span style={{fontSize:8,color:'var(--tx4)',transition:'transform .18s',display:'inline-block',transform:open?'rotate(90deg)':'none'}}>▶</span>
+                  <svg style={{transition:'transform .18s',transform:open?'rotate(90deg)':'rotate(0deg)',flexShrink:0}} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                   <span style={{fontSize:12.5,fontWeight:600,flex:1,color:open&&!actSk?'var(--lime-dk)':'var(--tx)',lineHeight:1.3}}>{dom.name}</span>
                   <span style={{fontSize:10,color:'var(--tx4)',background:'var(--sf3)',padding:'2px 7px',borderRadius:100,fontFamily:'var(--mono)'}}>{dom.count}</span>
                 </div>
