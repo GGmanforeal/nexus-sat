@@ -1,5 +1,5 @@
 'use client'
-// components/MathText.tsx — renders text, strips lone $ signs (not math)
+// components/MathText.tsx
 import { useEffect, useRef } from 'react'
 
 let katexState: 'idle' | 'loading' | 'ready' = 'idle'
@@ -39,18 +39,13 @@ function loadKaTeX(cb: () => void) {
   document.head.appendChild(s1)
 }
 
-// Detect whether text actually contains math expressions
-// Returns true only if $..$ / $$..$$  / \(...\) / \[..\]  patterns exist
-function hasMath(text: string): boolean {
-  return /\$\$[\s\S]+?\$\$|\$[\s\S]+?\$|\\\([\s\S]+?\\\)|\\\[[\s\S]+?\\\]/.test(text)
-}
-
-// Strip lone $ signs that are NOT part of math (e.g. currency symbols)
-function cleanDollarSigns(text: string): string {
-  // Replace $ that is NOT followed by a non-space character (i.e. currency $50)
-  // Keep $x$ math pairs intact, remove standalone currency $ symbols
-  // Strategy: replace $ that is followed by space, digit without closing $, or end
-  return text.replace(/\$(?!\S[^$]*\$)/g, '')
+// Remove standalone $ signs that are NOT math (e.g. "$50", "$ ", "5$")
+// Keep only $..$ pairs that look like math: $x^2$, $\frac{1}{2}$, etc.
+function stripCurrencyDollars(text: string): string {
+  // Replace $ that is not part of a $...$ math pair
+  // A math $ pair: starts with $, followed by non-space, ends with $
+  // We protect math pairs first, then strip lonely $
+  return text.replace(/\$(?=[0-9,. ]|\s|$)/g, '')
 }
 
 const DELIMITERS = [
@@ -73,15 +68,13 @@ export function MathText({ text, style, className }: Props) {
     const el = ref.current
     if (!el) return
 
-    const displayText = cleanDollarSigns(text)
-    el.textContent = displayText
-
-    if (!hasMath(text)) return  // skip KaTeX loading for non-math text
+    // Show text immediately (no flash)
+    el.textContent = text
 
     loadKaTeX(() => {
       const el2 = ref.current
       if (!el2) return
-      el2.textContent = displayText
+      el2.textContent = text
       try {
         ;(window as any).renderMathInElement?.(el2, {
           delimiters: DELIMITERS,
@@ -93,5 +86,5 @@ export function MathText({ text, style, className }: Props) {
     })
   }, [text])
 
-  return <div ref={ref} style={style} className={className}>{cleanDollarSigns(text)}</div>
+  return <div ref={ref} style={style} className={className}>{text}</div>
 }

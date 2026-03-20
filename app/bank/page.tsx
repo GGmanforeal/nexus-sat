@@ -116,24 +116,43 @@ export default function BankPage() {
   }, [])
 
   const buildTree = useCallback(async (c: Creds) => {
-    // Fetch ALL questions — high limit ensures new skills always appear
-    const data = await supaFetch(c, {select:'section,domain,skill', limit:20000})
-    if (!Array.isArray(data)) return
+    // Fetch in batches to get ALL rows (Supabase default limit is 1000)
+    let allData: any[] = []
+    let offset = 0
+    const batchSize = 1000
+    while (true) {
+      const p = new URLSearchParams()
+      p.set('select', 'section,domain,skill')
+      p.set('limit', String(batchSize))
+      p.set('offset', String(offset))
+      const batch = await fetch(`${c.url}/rest/v1/${c.table}?${p}`, {
+        headers: { apikey: c.key, Authorization: `Bearer ${c.key}` },
+      }).then(r => r.json()).catch(() => [])
+      if (!Array.isArray(batch) || batch.length === 0) break
+      allData = allData.concat(batch)
+      if (batch.length < batchSize) break
+      offset += batchSize
+    }
+    if (allData.length === 0) return
     const map: Record<string,Record<string,Record<string,number>>> = {English:{},Math:{}}
-    data.forEach((r: any) => {
-      // Normalise section: 'Math' → Math, everything else (EBRW / English / Reading and Writing) → English
-      const sectionNorm = (r.section||'').toLowerCase()
-      const rawSec = (sectionNorm === 'math') ? 'Math' : 'English'
-      const domain = r.domain || 'Other'
-      const skill  = r.skill  || ''
+    allData.forEach((r: any) => {
+      // Normalise section — case-insensitive
+      const sNorm = (r.section || '').trim().toLowerCase()
+      const rawSec = (sNorm === 'math') ? 'Math' : 'English'
+      const domain = (r.domain || 'Other').trim()
+      const skill  = (r.skill  || '').trim()
       const s = (rawSec === 'English' && isMathDomain(domain)) ? 'Math' : rawSec
-      if (!map[s][domain]) map[s][domain] = {_total:0}
-      map[s][domain]._total = (map[s][domain]._total||0)+1
-      if (skill) map[s][domain][skill] = (map[s][domain][skill]||0)+1
+      if (!map[s][domain]) map[s][domain] = { _total: 0 }
+      map[s][domain]._total = (map[s][domain]._total || 0) + 1
+      if (skill) map[s][domain][skill] = (map[s][domain][skill] || 0) + 1
     })
     const toArr = (obj: Record<string,Record<string,number>>): TreeDomain[] =>
-      Object.keys(obj).map(d => ({name:d,count:obj[d]._total||0,children:Object.keys(obj[d]).filter(k=>k!=='_total').map(sk=>({name:sk,count:obj[d][sk]}))}))
-    setTree({English:toArr(map.English),Math:toArr(map.Math)})
+      Object.keys(obj).sort().map(d => ({
+        name: d,
+        count: obj[d]._total || 0,
+        children: Object.keys(obj[d]).filter(k => k !== '_total').sort().map(sk => ({ name: sk, count: obj[d][sk] }))
+      }))
+    setTree({ English: toArr(map.English), Math: toArr(map.Math) })
   }, [])
 
   // Core load function — reads current values from refs so it's always fresh
@@ -288,7 +307,7 @@ export default function BankPage() {
 
       {/* ── SIDEBAR ──────────────────────────────────────── */}
       <aside className={`sidebar${sideOpen?' sidebar-open':''}`}
-        style={{width:sideOpen?'var(--side-w)':'0',minWidth:sideOpen?'var(--side-w)':'0',borderRight:sideOpen?'1px solid var(--line)':'none',background:'var(--sf)',display:'flex',flexDirection:'column',height:'100%',zIndex:250,overflow:'hidden',transition:'width .22s ease, min-width .22s ease'}}>
+        style={{width:'var(--side-w)',minWidth:'var(--side-w)',borderRight:'1px solid var(--line)',background:'var(--sf)',display:sideOpen?'flex':'none',flexDirection:'column',height:'100%',zIndex:250}}>
 
         {/* Connection status */}
         <div style={{padding:'8px 12px',borderBottom:'1px solid var(--line)',display:'flex',alignItems:'center',gap:6,fontSize:11.5}}>
