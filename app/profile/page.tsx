@@ -9,6 +9,25 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 interface User { email: string; name: string }
 
+/* ── SVG Icon set ── */
+const Ic = {
+  check:   <svg width="9"  height="9"  viewBox="0 0 24 24" fill="none" stroke="#fff"           strokeWidth="3"   strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  edit:    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  close:   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  calendar:<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+  user:    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)"      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+  stats:   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  saved:   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>,
+  mistake: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
+  score:   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  settings:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  overview:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"    strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  breakdown:<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"   strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  strong:  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g-tx)"     strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><polyline points="22 4 12 14.01 9 11.01"/><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg>,
+  target:  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)"     strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+  inbox:   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)"      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>,
+}
+
 function RingChart({ pct, size = 90, stroke = 8, color = 'var(--lime)' }: { pct: number; size?: number; stroke?: number; color?: string }) {
   const r = (size - stroke) / 2
   const circ = 2 * Math.PI * r
@@ -42,15 +61,15 @@ function Bar({ pct, color = 'var(--lime)' }: { pct: number; color?: string }) {
 }
 
 export default function ProfilePage() {
-  const [user, setUser]           = useState<User | null>(null)
-  const [loading, setLoading]     = useState(true)
-  const [editName, setEditName]   = useState(false)
-  const [nameInput, setNameInput] = useState('')
+  const [user, setUser]             = useState<User | null>(null)
+  const [loading, setLoading]       = useState(true)
+  const [editName, setEditName]     = useState(false)
+  const [nameInput, setNameInput]   = useState('')
   const [savingName, setSavingName] = useState(false)
   const [stats, setStats]   = useState(sessionStore.getStats())
   const [score, setScore]   = useState(sessionStore.getPredictedScore())
   const [joinDate, setJoinDate] = useState('')
-  const [tab, setTab]       = useState<'overview' | 'breakdown'>('overview')
+  const [tab, setTab] = useState<'overview' | 'breakdown'>('overview')
 
   useEffect(() => {
     const stored = localStorage.getItem('nexus_user')
@@ -121,11 +140,13 @@ export default function ProfilePage() {
 
   if (!user) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - var(--nav-h))', flexDirection: 'column', gap: 16, padding: 24, textAlign: 'center' }}>
-      <div style={{ fontSize: 56 }}>👤</div>
+      <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--sf)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {Ic.user}
+      </div>
       <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--tx)' }}>Not logged in</div>
       <div style={{ fontSize: 14, color: 'var(--tx3)', maxWidth: 300 }}>Create an account to save your progress and view your profile.</div>
       <Link href="/settings" style={{ marginTop: 8, padding: '10px 24px', background: 'var(--lime)', color: '#060a0e', borderRadius: 10, fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
-        Sign up / Log in →
+        Sign up / Log in
       </Link>
     </div>
   )
@@ -133,7 +154,7 @@ export default function ProfilePage() {
   return (
     <div style={{ maxWidth: 700, margin: '0 auto', padding: '28px 16px 80px' }}>
 
-      {/* ── HERO ─────────────────────────────────────────── */}
+      {/* ── HERO ── */}
       <div style={{ background: 'var(--sf)', border: '1px solid var(--line)', borderRadius: 18, padding: '24px 22px', marginBottom: 14, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'var(--lime)', opacity: .035, pointerEvents: 'none' }} />
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
@@ -144,7 +165,9 @@ export default function ProfilePage() {
               {initials}
             </div>
             {stats.total > 0 && (
-              <div style={{ position: 'absolute', bottom: 1, right: 1, width: 18, height: 18, borderRadius: '50%', background: 'var(--g-tx)', border: '2px solid var(--sf)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, color: '#fff' }}>✓</div>
+              <div style={{ position: 'absolute', bottom: 1, right: 1, width: 18, height: 18, borderRadius: '50%', background: 'var(--g-tx)', border: '2px solid var(--sf)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {Ic.check}
+              </div>
             )}
           </div>
 
@@ -161,16 +184,25 @@ export default function ProfilePage() {
                   {savingName ? '…' : 'Save'}
                 </button>
                 <button onClick={() => setEditName(false)}
-                  style={{ padding: '4px 10px', background: 'none', color: 'var(--tx3)', border: '1px solid var(--line2)', borderRadius: 7, fontSize: 13, cursor: 'pointer' }}>✕</button>
+                  style={{ padding: '4px 10px', background: 'none', color: 'var(--tx3)', border: '1px solid var(--line2)', borderRadius: 7, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {Ic.close}
+                </button>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
                 <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--tx)', letterSpacing: '-.4px' }}>{user.name}</div>
-                <button onClick={() => setEditName(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--tx4)', padding: 2 }}>✏️</button>
+                <button onClick={() => setEditName(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tx4)', padding: 2, display: 'flex', alignItems: 'center' }}>
+                  {Ic.edit}
+                </button>
               </div>
             )}
             <div style={{ fontSize: 13, color: 'var(--tx3)', marginBottom: 5 }}>{user.email}</div>
-            {joinDate && <div style={{ fontSize: 11, color: 'var(--tx4)' }}>📅 Member since {fmtDate(joinDate)}</div>}
+            {joinDate && (
+              <div style={{ fontSize: 11, color: 'var(--tx4)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                {Ic.calendar}
+                Member since {fmtDate(joinDate)}
+              </div>
+            )}
           </div>
 
           {/* Score badge */}
@@ -188,28 +220,32 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── STAT CARDS ───────────────────────────────────── */}
+      {/* ── STAT CARDS ── */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
-        <StatCard label="Answered" value={stats.total} sub="questions" />
-        <StatCard label="Correct" value={stats.correct} sub="answers" accent="var(--g-tx)" />
+        <StatCard label="Answered" value={stats.total}  sub="questions" />
+        <StatCard label="Correct"  value={stats.correct} sub="answers" accent="var(--g-tx)" />
         <StatCard label="Accuracy" value={stats.total ? `${stats.acc}%` : '—'}
           sub={stats.total ? `${stats.wrong} wrong` : 'no data'}
           accent={stats.acc >= 70 ? 'var(--g-tx)' : stats.acc >= 50 ? 'var(--a-tx)' : stats.total ? 'var(--r-tx)' : 'var(--tx3)'} />
-        <StatCard label="Saved" value={savedCount} sub="bookmarks" accent="var(--lime-dk)" />
+        <StatCard label="Saved"    value={savedCount} sub="bookmarks" accent="var(--lime-dk)" />
       </div>
 
-      {/* ── TABS ─────────────────────────────────────────── */}
+      {/* ── TABS ── */}
       <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
         {(['overview', 'breakdown'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
-            padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none',
+            padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none',
             background: tab === t ? 'var(--lime)' : 'var(--sf2)',
             color: tab === t ? '#060a0e' : 'var(--tx3)',
-          }}>{t === 'overview' ? '📊 Overview' : '🗂 Breakdown'}</button>
+            display: 'flex', alignItems: 'center', gap: 6,
+          }}>
+            {t === 'overview' ? Ic.overview : Ic.breakdown}
+            {t === 'overview' ? 'Overview' : 'Breakdown'}
+          </button>
         ))}
       </div>
 
-      {/* ── OVERVIEW ─────────────────────────────────────── */}
+      {/* ── OVERVIEW ── */}
       {tab === 'overview' && (
         <>
           {/* Section rings */}
@@ -243,14 +279,18 @@ export default function ProfilePage() {
             <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
               {bestDomain && (
                 <div style={{ flex: 1, minWidth: 140, background: 'var(--g-bg)', border: '1px solid var(--g-ln)', borderRadius: 13, padding: '13px 15px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--g-tx)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 5 }}>💪 Strongest</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--g-tx)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    {Ic.strong} Strongest
+                  </div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tx)' }}>{bestDomain.domain}</div>
                   <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 2 }}>{bestDomain.section} · {bestDomain.pct}%</div>
                 </div>
               )}
               {worstDomain && worstDomain.domain !== bestDomain?.domain && (
                 <div style={{ flex: 1, minWidth: 140, background: 'var(--r-bg)', border: '1px solid var(--r-ln)', borderRadius: 13, padding: '13px 15px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--r-tx)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 5 }}>🎯 Needs Work</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--r-tx)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    {Ic.target} Needs Work
+                  </div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tx)' }}>{worstDomain.domain}</div>
                   <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 2 }}>{worstDomain.section} · {worstDomain.pct}%</div>
                 </div>
@@ -262,37 +302,37 @@ export default function ProfilePage() {
           <div style={{ background: 'var(--sf)', border: '1px solid var(--line)', borderRadius: 16, overflow: 'hidden' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tx4)', textTransform: 'uppercase', letterSpacing: '.5px', padding: '12px 20px', borderBottom: '1px solid var(--line)' }}>Quick Access</div>
             {[
-              { href: '/stats',    icon: '📊', label: 'Full Stats',        desc: 'Domain & skill breakdown' },
-              { href: '/saved',    icon: '🔖', label: 'Saved Questions',   desc: `${savedCount} bookmarked` },
-              { href: '/mistakes', icon: '❌', label: 'Mistake Review',    desc: `${stats.wrong} to review` },
-              { href: '/score',    icon: '🎯', label: 'Score Predictor',   desc: 'Estimate your SAT score' },
-              { href: '/settings', icon: '⚙️', label: 'Account Settings', desc: 'Theme, auth, credentials' },
+              { href: '/stats',    icon: Ic.stats,    label: 'Full Stats',        desc: 'Domain & skill breakdown' },
+              { href: '/saved',    icon: Ic.saved,    label: 'Saved Questions',   desc: `${savedCount} bookmarked` },
+              { href: '/mistakes', icon: Ic.mistake,  label: 'Mistake Review',    desc: `${stats.wrong} to review` },
+              { href: '/score',    icon: Ic.score,    label: 'Score Predictor',   desc: 'Estimate your SAT score' },
+              { href: '/settings', icon: Ic.settings, label: 'Account Settings',  desc: 'Theme, auth, credentials' },
             ].map(({ href, icon, label, desc }) => (
               <Link key={href} href={href}
-                style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '12px 20px', borderBottom: '1px solid var(--line)', textDecoration: 'none' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '13px 20px', borderBottom: '1px solid var(--line)', textDecoration: 'none' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'var(--sf2)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{icon}</span>
+                <span style={{ width: 34, height: 34, borderRadius: 9, background: 'var(--sf3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--tx3)', flexShrink: 0 }}>{icon}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--tx)' }}>{label}</div>
                   <div style={{ fontSize: 12, color: 'var(--tx3)', marginTop: 1 }}>{desc}</div>
                 </div>
-                <span style={{ color: 'var(--tx4)', fontSize: 18 }}>›</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
               </Link>
             ))}
           </div>
         </>
       )}
 
-      {/* ── BREAKDOWN ────────────────────────────────────── */}
+      {/* ── BREAKDOWN ── */}
       {tab === 'breakdown' && (
         <div style={{ background: 'var(--sf)', border: '1px solid var(--line)', borderRadius: 16, overflow: 'hidden' }}>
           {domainRows.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--tx3)' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>{Ic.inbox}</div>
               <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--tx2)', marginBottom: 6 }}>No data yet</div>
               <div style={{ fontSize: 13 }}>Answer questions in the bank to see your breakdown here.</div>
-              <Link href="/bank" style={{ display: 'inline-block', marginTop: 16, padding: '9px 20px', background: 'var(--lime)', color: '#060a0e', borderRadius: 9, fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>Go to Question Bank →</Link>
+              <Link href="/bank" style={{ display: 'inline-block', marginTop: 16, padding: '9px 20px', background: 'var(--lime)', color: '#060a0e', borderRadius: 9, fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>Go to Question Bank</Link>
             </div>
           ) : (
             <>
