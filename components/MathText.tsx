@@ -42,7 +42,7 @@ function loadKaTeX(cb: () => void) {
 // Detect whether text actually contains math expressions
 // Returns true only if $..$ / $$..$$  / \(...\) / \[..\]  patterns exist
 function hasMath(text: string): boolean {
-  return /\$\$.+?\$\$|\$.+?\$|\\\(.+?\\\)|\\\[.+?\\\]/s.test(text)
+  return /\$\$[\s\S]+?\$\$|\$[\s\S]+?\$|\\\([\s\S]+?\\\)|\\\[[\s\S]+?\\\]/.test(text)
 }
 
 // Strip lone $ signs that are NOT part of math (e.g. currency symbols)
