@@ -116,12 +116,12 @@ export default function BankPage() {
   }, [])
 
   const buildTree = useCallback(async (c: Creds) => {
-    // Fetch ALL questions for tree — no limit so new skills always appear
-    const data = await supaFetch(c, {select:'section,domain,skill', limit:10000})
+    // Fetch ALL questions — high limit ensures new skills always appear
+    const data = await supaFetch(c, {select:'section,domain,skill', limit:20000})
     if (!Array.isArray(data)) return
     const map: Record<string,Record<string,Record<string,number>>> = {English:{},Math:{}}
     data.forEach((r: any) => {
-      // 'EBRW' and anything non-Math → English tab
+      // 'Math' → Math tab, everything else (EBRW, English, Reading and Writing) → English tab
       const rawSec = (r.section === 'Math') ? 'Math' : 'English'
       const domain = r.domain || 'Other'
       const skill  = r.skill  || ''
