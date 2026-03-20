@@ -65,7 +65,7 @@ export default function BankPage() {
   const [actSk, setActSk]         = useState<string|null>(null)
   const [diff, setDiff]           = useState('all')
   const [shuffle, setShuffle]     = useState(false)
-  const [sideOpen, setSideOpen]   = useState(false)
+  const [sideOpen, setSideOpen]   = useState(true)
   const [showModal, setShowModal] = useState(false)
 
   // Use refs so filter callbacks always see current values
@@ -121,8 +121,9 @@ export default function BankPage() {
     if (!Array.isArray(data)) return
     const map: Record<string,Record<string,Record<string,number>>> = {English:{},Math:{}}
     data.forEach((r: any) => {
-      // 'Math' → Math tab, everything else (EBRW, English, Reading and Writing) → English tab
-      const rawSec = (r.section === 'Math') ? 'Math' : 'English'
+      // Normalise section: 'Math' → Math, everything else (EBRW / English / Reading and Writing) → English
+      const sectionNorm = (r.section||'').toLowerCase()
+      const rawSec = (sectionNorm === 'math') ? 'Math' : 'English'
       const domain = r.domain || 'Other'
       const skill  = r.skill  || ''
       const s = (rawSec === 'English' && isMathDomain(domain)) ? 'Math' : rawSec
@@ -159,13 +160,14 @@ export default function BankPage() {
 
     // Filter by section — 'Math' only for Math tab, everything else (EBRW etc) → English
     items = items.filter(q => {
-      const qSec = isMathDomain(q.domain||'') ? 'Math' : (q.section === 'Math' ? 'Math' : 'English')
+      const sNorm = (q.section||'').toLowerCase()
+      const qSec = isMathDomain(q.domain||'') ? 'Math' : (sNorm === 'math' ? 'Math' : 'English')
       return qSec === useSec
     })
 
     const sorted = useShuffle ? [...items].sort(()=>Math.random()-.5) : items
     setQs(sorted); setLoadingQs(false)
-    if (sorted.length > 0) setSideOpen(false)
+    if (sorted.length > 0 && window.innerWidth < 700) setSideOpen(false)
   }, [])
 
   const tryConnect = async (url: string, key: string, table: string) => {
@@ -281,12 +283,12 @@ export default function BankPage() {
   return (
     <div style={{display:'flex',height:'calc(100dvh - var(--nav-h))',overflow:'hidden',position:'relative'}}>
 
-      {/* Mobile overlay */}
-      {sideOpen && <div onClick={()=>setSideOpen(false)} className="mob-overlay" style={{position:'fixed',inset:0,background:'rgba(0,0,0,.6)',zIndex:200,display:'block'}} />}
+      {/* Mobile overlay — only on small screens */}
+      {sideOpen && <div onClick={()=>setSideOpen(false)} className="mob-overlay" style={{position:'fixed',inset:0,background:'rgba(0,0,0,.6)',zIndex:200}} />}
 
       {/* ── SIDEBAR ──────────────────────────────────────── */}
       <aside className={`sidebar${sideOpen?' sidebar-open':''}`}
-        style={{width:'var(--side-w)',minWidth:'var(--side-w)',borderRight:'1px solid var(--line)',background:'var(--sf)',display:'flex',flexDirection:'column',height:'100%',zIndex:250}}>
+        style={{width:sideOpen?'var(--side-w)':'0',minWidth:sideOpen?'var(--side-w)':'0',borderRight:sideOpen?'1px solid var(--line)':'none',background:'var(--sf)',display:'flex',flexDirection:'column',height:'100%',zIndex:250,overflow:'hidden',transition:'width .22s ease, min-width .22s ease'}}>
 
         {/* Connection status */}
         <div style={{padding:'8px 12px',borderBottom:'1px solid var(--line)',display:'flex',alignItems:'center',gap:6,fontSize:11.5}}>
@@ -360,8 +362,10 @@ export default function BankPage() {
 
         {/* Top bar */}
         <div style={{height:44,borderBottom:'1px solid var(--line)',display:'flex',alignItems:'center',padding:'0 12px',gap:8,background:'var(--sf)',flexShrink:0}}>
-          <button onClick={()=>setSideOpen(o=>!o)} className="mob-menu-btn"
-            style={{width:32,height:32,borderRadius:7,border:'1px solid var(--line2)',background:'var(--sf2)',cursor:'pointer',display:'none',alignItems:'center',justifyContent:'center',flexShrink:0,color:'var(--tx2)'}}>
+          {/* Sidebar toggle — always visible */}
+          <button onClick={()=>setSideOpen(o=>!o)}
+            title={sideOpen ? 'Hide topics' : 'Show topics'}
+            style={{width:32,height:32,borderRadius:7,border:'1px solid var(--line2)',background:sideOpen?'var(--lime-dim)':'var(--sf2)',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,color:sideOpen?'var(--lime-dk)':'var(--tx2)',transition:'background .15s,color .15s'}}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
@@ -430,7 +434,24 @@ export default function BankPage() {
           {sessionDone && (
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%',padding:'24px'}}>
               <div style={{background:'var(--sf)',border:'1px solid var(--line)',borderRadius:20,padding:'40px 32px',maxWidth:380,width:'100%',textAlign:'center',animation:'fadeUp .3s ease'}}>
-                <div style={{fontSize:52,marginBottom:16}}>{(correct/total)>=.8?'🎉':(correct/total)>=.6?'💪':'📚'}</div>
+                {/* Score icon — SVG instead of emoji */}
+                <div style={{width:64,height:64,borderRadius:18,margin:'0 auto 20px',display:'flex',alignItems:'center',justifyContent:'center',
+                  background:(correct/total)>=.8?'var(--g-bg)':(correct/total)>=.6?'var(--a-bg)':'var(--r-bg)',
+                  border:`1px solid ${(correct/total)>=.8?'var(--g-ln)':(correct/total)>=.6?'var(--a-ln)':'var(--r-ln)'}`}}>
+                  {(correct/total)>=.8 ? (
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--g-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  ) : (correct/total)>=.6 ? (
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--a-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                  ) : (
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                  )}
+                </div>
                 <div style={{fontSize:20,fontWeight:800,marginBottom:4,letterSpacing:'-.3px'}}>Session complete!</div>
                 <div style={{fontSize:13,color:'var(--tx3)',marginBottom:24}}>{actSk||actDom} · {total} questions</div>
                 <div style={{display:'flex',justifyContent:'center',gap:20,marginBottom:28}}>
@@ -553,8 +574,13 @@ export default function BankPage() {
                   background:sel===q.correct_answer?'var(--g-bg)':'var(--r-bg)',
                   border:`1px solid ${sel===q.correct_answer?'var(--g-ln)':'var(--r-ln)'}`,
                   animation:'fadeUp .2s ease'}}>
-                  <div style={{fontSize:13.5,fontWeight:700,marginBottom:8,color:sel===q.correct_answer?'var(--g-tx)':'var(--r-tx)'}}>
-                    {sel===q.correct_answer?'✓ Correct!':'✗ Incorrect — correct answer is '+q.correct_answer}
+                  <div style={{fontSize:13.5,fontWeight:700,marginBottom:8,color:sel===q.correct_answer?'var(--g-tx)':'var(--r-tx)',display:'flex',alignItems:'center',gap:7}}>
+                    {sel===q.correct_answer ? (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    )}
+                    {sel===q.correct_answer?'Correct!':'Incorrect — correct answer is '+q.correct_answer}
                   </div>
                   {q.explanation ? (
                     <MathText text={q.explanation} style={{fontSize:13.5,lineHeight:1.75,color:'var(--tx2)'}} />

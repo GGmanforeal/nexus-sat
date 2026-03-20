@@ -141,7 +141,7 @@ html, body {
   /* Body padding for bottom nav */
   body { padding-bottom: 64px; }
 
-  /* Sidebar: slide in from left */
+  /* Sidebar: slide in from left on mobile */
   .sidebar {
     position: fixed !important;
     left: -100% !important;
@@ -153,10 +153,11 @@ html, body {
     min-width: unset !important;
     max-width: 310px !important;
     box-shadow: 4px 0 28px rgba(0,0,0,.45) !important;
+    /* always show content when open */
+    overflow: visible !important;
   }
-  .sidebar-open  { left: 0 !important; }
+  .sidebar-open  { left: 0 !important; width: 82vw !important; min-width: unset !important; }
   .mob-overlay   { display: block !important; }
-  .mob-menu-btn  { display: flex !important; }
 
   /* Question padding tighter */
   div[style*="maxWidth: 760"] { padding: 16px 14px 24px !important; }
