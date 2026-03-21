@@ -1,2 +1,2 @@
 { href:'/topics', label:'Browse Topics', color:'#38bdf8', desc:'All domains & skills sorted by question count.', Icon:TopicsIcon },
-{open('/mnt/user-data/outputs/page.tsx').read()}, { href:'/topics', label:'Browse Topics', color:'#38bdf8', desc:'All domains & skills sorted by question count.', Icon:TopicsIcon },
+{open('/mnt/user-data/outputs/page.tsx').read()} { href:'/topics', label:'Browse Topics', color:'#38bdf8', desc:'All domains & skills sorted by question count.', Icon:TopicsIcon },
