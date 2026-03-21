@@ -24,12 +24,21 @@ function estimateScore(correct: number, total: number): { total: number; rw: num
   return { total: section * 2, rw: section, math: section }
 }
 
-function scoreLabel(total: number) {
-  if (total >= 1500) return { text: 'Exceptional', color: '#4ade80', emoji: '🏆' }
-  if (total >= 1350) return { text: 'Strong', color: '#60a5fa', emoji: '⭐' }
-  if (total >= 1200) return { text: 'Developing', color: '#fbbf24', emoji: '📈' }
-  if (total >= 1000) return { text: 'Needs Work', color: '#f97316', emoji: '🎯' }
-  return { text: 'Starting Out', color: '#f87171', emoji: '🌱' }
+// Score label icons — all SVG, zero emoji
+const SvgTrophy = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+const SvgStar   = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+const SvgTrend  = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+const SvgTarget = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+const SvgSeed   = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12"/><path d="M5 12a7 7 0 0 0 7-7 7 7 0 0 0 7 7"/></svg>
+const SvgBook   = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+
+type ScoreIcon = () => JSX.Element
+function scoreLabel(total: number): { text: string; color: string; Icon: ScoreIcon } {
+  if (total >= 1500) return { text: 'Exceptional', color: '#4ade80', Icon: SvgTrophy }
+  if (total >= 1350) return { text: 'Strong',      color: '#60a5fa', Icon: SvgStar   }
+  if (total >= 1200) return { text: 'Developing',  color: '#fbbf24', Icon: SvgTrend  }
+  if (total >= 1000) return { text: 'Needs Work',  color: '#f97316', Icon: SvgTarget }
+  return                     { text: 'Starting Out',color: '#f87171', Icon: SvgSeed   }
 }
 
 function getStudyPlan(score: number, weakDomains: string[]) {
@@ -291,8 +300,8 @@ export default function DiagnosticPage() {
           <div style={{ position:'absolute', top:-80, left:'50%', transform:'translateX(-50%)', width:300, height:300, borderRadius:'50%', background:label.color, opacity:.06 }}/>
           <div style={{ fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:'2px', color:'var(--tx4)', marginBottom:16 }}>Your Diagnostic Score</div>
           <div style={{ fontSize:80, fontWeight:900, lineHeight:1, letterSpacing:'-4px', color:label.color, marginBottom:8, fontFamily:'var(--mono)' }}>{score.total}</div>
-          <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'6px 18px', borderRadius:100, background:`${label.color}18`, border:`1px solid ${label.color}40`, marginBottom:20 }}>
-            <span>{label.emoji}</span>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'6px 18px', borderRadius:100, background:`${label.color}18`, border:`1px solid ${label.color}40`, marginBottom:20, color:label.color }}>
+            <label.Icon />
             <span style={{ fontSize:14, fontWeight:700, color:label.color }}>{label.text}</span>
           </div>
           <div style={{ display:'flex', gap:12, justifyContent:'center', marginBottom:20 }}>
@@ -309,7 +318,9 @@ export default function DiagnosticPage() {
         {/* Target */}
         <div style={{ background:'rgba(163,230,53,.08)', border:'1px solid rgba(163,230,53,.25)', borderRadius:18, padding:'22px 24px', marginBottom:16 }}>
           <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:16 }}>
-            <div style={{ fontSize:32, lineHeight:1 }}>🎯</div>
+            <div style={{ width:44, height:44, borderRadius:12, background:'rgba(163,230,53,.15)', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--lime-dk)', flexShrink:0 }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
             <div>
               <div style={{ fontSize:15, fontWeight:800, color:'var(--tx)', marginBottom:2 }}>
                 Your target: <span style={{ color:'var(--lime-dk)' }}>{plan.targetScore}</span>
@@ -330,7 +341,7 @@ export default function DiagnosticPage() {
             </div>
             <div style={{ display:'flex', justifyContent:'space-between', marginTop:5 }}>
               <span style={{ fontSize:11, color:label.color, fontWeight:700 }}>You now: {score.total}</span>
-              <span style={{ fontSize:11, color:'var(--lime-dk)', fontWeight:700 }}>Target: {plan.targetScore} 🏆</span>
+              <span style={{ fontSize:11, color:'var(--lime-dk)', fontWeight:700, display:'flex', alignItems:'center', gap:4 }}>Target: {plan.targetScore} <SvgTrophy /></span>
             </div>
           </div>
         </div>
@@ -338,7 +349,7 @@ export default function DiagnosticPage() {
         {/* Weak spots */}
         {weakDomains.length > 0 && (
           <div style={{ background:'var(--sf)', border:'1px solid var(--line)', borderRadius:16, padding:'20px', marginBottom:16 }}>
-            <div style={{ fontSize:13, fontWeight:700, color:'var(--tx)', marginBottom:12 }}>📚 Focus areas identified</div>
+            <div style={{ fontSize:13, fontWeight:700, color:'var(--tx)', marginBottom:12, display:'flex', alignItems:'center', gap:7 }}><span style={{ color:'#a78bfa' }}><SvgBook /></span> Focus areas identified</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {weakDomains.slice(0,3).map((d,i) => (
                 <div key={d} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 14px', background:'var(--r-bg)', border:'1px solid var(--r-ln)', borderRadius:10 }}>
