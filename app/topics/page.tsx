@@ -103,8 +103,8 @@ export default function TopicsPage() {
     }
 
     return [
-      buildSection('English', 'English Reading & Writing', '#d946ef', 'rgba(217,70,239,.12)'),
-      buildSection('Math',    'Math',                      '#06b6d4', 'rgba(6,182,212,.12)'),
+      buildSection('English', 'English Reading & Writing', '#6366f1', 'rgba(99,102,241,.1)'),
+      buildSection('Math',    'Math',                      '#0ea5e9', 'rgba(14,165,233,.1)'),
     ]
   }, [rawData, sort, search])
 

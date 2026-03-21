@@ -132,12 +132,10 @@ export default function BankPage() {
   const [wrong, setWrong]         = useState(0)
   const [sessionDone, setSessionDone] = useState(false)
   const [flagged, setFlagged]     = useState<Set<number>>(new Set())
-  const [rushMode, setRushMode]   = useState(false)
-  const [rushActive, setRushActive] = useState(false)
+  const rushMode = true // always on
+  const [rushActive, setRushActive]   = useState(false)
   const [rushExpired, setRushExpired] = useState(false)
   const questionStartMs = useRef<number>(Date.now())
-  const rushModeRef = useRef(false)
-  useEffect(() => { rushModeRef.current = rushMode }, [rushMode])
 
   useEffect(() => {
     setSaved(new Set(Object.keys(sessionStore.get().saved)))
@@ -235,7 +233,7 @@ export default function BankPage() {
     if (sorted.length > 0 && window.innerWidth < 700) setSideOpen(false)
     if (sorted.length > 0) {
       questionStartMs.current = Date.now()
-      if (rushModeRef.current) { setRushActive(true); setRushExpired(false) }
+      setRushActive(true); setRushExpired(false)
     }
   }, [])
 
@@ -265,7 +263,7 @@ export default function BankPage() {
   const goTo = (i: number) => {
     setIdx(i); setSel(null); setSubmitted(false); setRushExpired(false)
     questionStartMs.current = Date.now()
-    if (rushMode) setRushActive(true)
+    setRushActive(true)
   }
 
   const confirmAnswer = useCallback((forceAnswer?: string) => {
@@ -345,10 +343,10 @@ export default function BankPage() {
             Create a free account to access the full question bank, track your progress, and predict your SAT score.
           </div>
           <div style={{display:'flex',gap:10,justifyContent:'center',flexWrap:'wrap'}}>
-            <Link href="/settings" style={{padding:'11px 26px',background:'var(--lime)',color:'#060a0e',borderRadius:11,fontWeight:800,fontSize:14,textDecoration:'none'}}>
+            <Link href="/login?signup=1" style={{padding:'11px 26px',background:'var(--lime)',color:'#060a0e',borderRadius:11,fontWeight:800,fontSize:14,textDecoration:'none'}}>
               Sign up free →
             </Link>
-            <Link href="/settings" style={{padding:'11px 18px',background:'var(--sf2)',color:'var(--tx2)',border:'1px solid var(--line2)',borderRadius:11,fontSize:14,textDecoration:'none'}}>
+            <Link href="/login" style={{padding:'11px 18px',background:'var(--sf2)',color:'var(--tx2)',border:'1px solid var(--line2)',borderRadius:11,fontSize:14,textDecoration:'none'}}>
               Log in
             </Link>
           </div>
@@ -394,19 +392,11 @@ export default function BankPage() {
               <span style={{position:'absolute',width:16,height:16,borderRadius:'50%',background:'white',top:2,left:shuffle?18:2,transition:'left .18s',boxShadow:'0 1px 4px rgba(0,0,0,.25)'}} />
             </button>
           </div>
-          {/* Practice Rush toggle */}
-          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderTop:'1px solid var(--line)'}}>
-            <div>
-              <div style={{fontSize:13,color:'var(--tx2)',display:'flex',alignItems:'center',gap:5}}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={rushMode?'var(--r-tx)':'var(--tx3)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span style={{fontWeight:600,color:rushMode?'var(--r-tx)':'var(--tx2)'}}>Practice Rush</span>
-              </div>
-              <div style={{fontSize:10.5,color:'var(--tx4)',marginTop:2}}>75s timer per question</div>
-            </div>
-            <button onClick={()=>setRushMode(m=>!m)}
-              style={{width:36,height:20,borderRadius:10,border:'none',background:rushMode?'#ef4444':'var(--sf3)',position:'relative',cursor:'pointer',transition:'background .2s',flexShrink:0}}>
-              <span style={{position:'absolute',width:16,height:16,borderRadius:'50%',background:'white',top:2,left:rushMode?18:2,transition:'left .18s',boxShadow:'0 1px 4px rgba(0,0,0,.25)'}} />
-            </button>
+          {/* Rush timer — always on */}
+          <div style={{display:'flex',alignItems:'center',gap:7,padding:'7px 0',borderTop:'1px solid var(--line)'}}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span style={{fontSize:12,fontWeight:600,color:'var(--r-tx)'}}>75s timer active</span>
+            <span style={{fontSize:10.5,color:'var(--tx4)',marginLeft:'auto'}}>SAT pace</span>
           </div>
         </div>
 
@@ -429,7 +419,7 @@ export default function BankPage() {
             const open = dom.name===actDom
             return (
               <div key={di} style={{borderBottom:'1px solid var(--line)'}}>
-                <div onClick={()=>{setActDom(dom.name);actDomRef.current=dom.name;setActSk(null);actSkRef.current=null;loadQs(dom.name,null)}}
+                <div onClick={()=>{const isOpen=dom.name===actDom;setActDom(isOpen?null:dom.name);actDomRef.current=isOpen?null:dom.name;setActSk(null);actSkRef.current=null;}}
                   style={{display:'flex',alignItems:'center',gap:8,padding:'10px 12px',cursor:'pointer',background:open&&!actSk?'var(--lime-dim)':'transparent',transition:'background .1s'}}>
                   <svg style={{transition:'transform .18s',transform:open?'rotate(90deg)':'rotate(0deg)',flexShrink:0}} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--tx4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                   <span style={{fontSize:12.5,fontWeight:600,flex:1,color:open&&!actSk?'var(--lime-dk)':'var(--tx)',lineHeight:1.3}}>{dom.name}</span>

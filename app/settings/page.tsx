@@ -1,6 +1,7 @@
 'use client'
 // app/settings/page.tsx
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { sessionStore } from '@/lib/store/session'
 
 const ADMIN_PIN = 'nexus2025'
@@ -184,8 +185,8 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-                <a href="/profile" style={lBtn}>My Profile</a>
-                <a href="/stats"   style={lBtn}>My Stats</a>
+                <Link href="/profile" style={lBtn}>My Profile</Link>
+                <Link href="/stats"   style={lBtn}>My Stats</Link>
                 <button onClick={logout} style={{...lBtn,background:'var(--r-bg)',color:'var(--r-tx)',border:'1px solid var(--r-ln)',cursor:'pointer'}}>Log out</button>
               </div>
             </>

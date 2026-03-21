@@ -76,11 +76,15 @@ export default function DiagnosticPage() {
   const startDiagnostic = async () => {
     setLoading(true)
     // Get mix: 5 R&W (easy+med) + 5 Math (easy+med)
+    // Fetch larger pool then shuffle client-side (Supabase REST doesn't support random order)
     const [rw, math] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/sat_questions?select=*&section=neq.Math&limit=5&order=random`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }).then(r => r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/sat_questions?select=*&section=eq.Math&limit=5&order=random`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }).then(r => r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/sat_questions?select=*&section=neq.Math&limit=50`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }).then(r => r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/sat_questions?select=*&section=eq.Math&limit=50`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }).then(r => r.json()),
     ])
-    const mixed = [...(Array.isArray(rw)?rw:[]), ...(Array.isArray(math)?math:[])].slice(0, TOTAL)
+    const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5)
+    const rwShuffled   = shuffle(Array.isArray(rw)   ? rw   : []).slice(0, 5)
+    const mathShuffled = shuffle(Array.isArray(math) ? math : []).slice(0, 5)
+    const mixed = [...rwShuffled, ...mathShuffled].slice(0, TOTAL)
     if (mixed.length === 0) { setLoading(false); return }
     setQs(mixed.sort(() => Math.random() - 0.5))
     setLoading(false)
