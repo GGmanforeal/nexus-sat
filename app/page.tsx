@@ -444,45 +444,52 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── WHY WE'RE BETTER (mobile-friendly table) ─────── */}
-      <section style={{ background:'var(--sf)', borderTop:'1px solid var(--line)', borderBottom:'1px solid var(--line)', padding:'clamp(40px,7vw,72px) 24px' }}>
-        <div style={{ maxWidth:860, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:40 }}>
+      {/* ── WHY WE'RE BETTER ──────────────────────────────── */}
+      <section style={{ background:'var(--sf)', borderTop:'1px solid var(--line)', borderBottom:'1px solid var(--line)', padding:'clamp(40px,7vw,72px) 16px' }}>
+        <div style={{ maxWidth:680, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:36 }}>
             <div style={{ fontSize:11, fontWeight:700, color:'var(--lime-dk)', textTransform:'uppercase', letterSpacing:'2px', marginBottom:10 }}>Why Nexus</div>
-            <h2 style={{ fontSize:'clamp(24px,4vw,36px)', fontWeight:900, letterSpacing:'-.8px', color:'var(--tx)' }}>What the others are missing</h2>
+            <h2 style={{ fontSize:'clamp(22px,4vw,34px)', fontWeight:900, letterSpacing:'-.8px', color:'var(--tx)' }}>What the others are missing</h2>
           </div>
 
-          {/* Comparison table — fixed 5-column grid that works on all screen sizes */}
-          <div style={{ background:'var(--bg)', border:'1px solid var(--line)', borderRadius:18, overflow:'hidden' }}>
+          {/* Table — rounded container, horizontal scroll only if truly needed */}
+          <div style={{ borderRadius:16, border:'1px solid var(--line)', overflow:'hidden' }}>
             {/* Header */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', borderBottom:'1px solid var(--line)', background:'var(--sf)' }}>
-              <div style={{ padding:'12px 16px', fontSize:11, fontWeight:700, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'.5px' }}>Feature</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', background:'var(--sf2)', borderBottom:'2px solid var(--line2)', padding:'0 4px' }}>
+              <div style={{ padding:'11px 12px', fontSize:10, fontWeight:700, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'1px' }}>Feature</div>
               {[
                 { label:'Nexus', color:'var(--lime-dk)' },
                 { label:'Khan',  color:'var(--tx3)' },
                 { label:'CB',    color:'var(--tx3)' },
                 { label:'Prep',  color:'var(--tx3)' },
-              ].map(col => (
-                <div key={col.label} style={{ padding:'12px 4px', textAlign:'center', fontSize:12, fontWeight:700, color:col.color }}>{col.label}</div>
+              ].map(h => (
+                <div key={h.label} style={{ padding:'11px 0', textAlign:'center', fontSize:11.5, fontWeight:800, color:h.color }}>{h.label}</div>
               ))}
             </div>
             {/* Rows */}
             {COMPARE.map((row, ri) => (
-              <div key={ri} style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', alignItems:'center', borderBottom: ri < COMPARE.length-1 ? '1px solid var(--line)' : 'none' }}>
-                <div style={{ padding:'13px 16px', fontSize:13, color:'var(--tx2)', lineHeight:1.4 }}>{row.feature}</div>
+              <div key={ri} style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', padding:'0 4px', borderBottom: ri < COMPARE.length-1 ? '1px solid var(--line)' : 'none', background: ri%2===0 ? 'var(--bg)' : 'var(--sf)' }}>
+                <div style={{ padding:'13px 12px', fontSize:13, color:'var(--tx2)', lineHeight:1.4, display:'flex', alignItems:'center' }}>{row.feature}</div>
                 {[row.nexus, row.khan, row.cb, row.prep].map((val, ci) => (
-                  <div key={ci} style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'13px 0' }}>
+                  <div key={ci} style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'13px 0' }}>
                     {val ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ci===0?'var(--g-tx)':'var(--tx4)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke={ci===0 ? '#4ade80' : '#64748b'}
+                        strokeWidth={ci===0 ? '2.8' : '2'}
+                        strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
                     )}
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <p style={{ textAlign:'center', fontSize:11.5, color:'var(--tx4)', marginTop:12 }}>CB = College Board · Prep = Prepscholar free tier</p>
+          <p style={{ textAlign:'center', fontSize:11.5, color:'var(--tx4)', marginTop:10 }}>CB = College Board · Prep = Prepscholar free tier</p>
         </div>
       </section>
 
