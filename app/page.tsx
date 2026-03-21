@@ -43,14 +43,14 @@ const FEATURES = [
 
 /* ─── Vs. comparison ─────────────────────────────────────── */
 const COMPARE = [
-  { feature:'Real SAT questions (PSAT/Digital)',   nexus:true,  khan:true,  cb:true,   prep:false },
-  { feature:'Live score predictor',                nexus:true,  khan:false, cb:false,  prep:false },
-  { feature:'Mistake tracker by skill',            nexus:true,  khan:false, cb:false,  prep:false },
-  { feature:'Timed pressure mode (75s)',           nexus:true,  khan:false, cb:false,  prep:false },
-  { feature:'Adaptive difficulty engine',          nexus:true,  khan:true,  cb:false,  prep:false },
-  { feature:'Gamification (XP, streaks, levels)',  nexus:true,  khan:true,  cb:false,  prep:false },
-  { feature:'Free — no paywall',                   nexus:true,  khan:true,  cb:true,   prep:false },
-  { feature:'No ads',                              nexus:true,  khan:false, cb:false,  prep:false },
+  { feature:'Real SAT questions',  nexus:true,  khan:true,  cb:true,   prep:false },
+  { feature:'Live score predictor',nexus:true,  khan:false, cb:false,  prep:false },
+  { feature:'Mistake tracker',     nexus:true,  khan:false, cb:false,  prep:false },
+  { feature:'75s timer mode',      nexus:true,  khan:false, cb:false,  prep:false },
+  { feature:'Adaptive difficulty', nexus:true,  khan:true,  cb:false,  prep:false },
+  { feature:'XP & streaks',        nexus:true,  khan:true,  cb:false,  prep:false },
+  { feature:'Free, no paywall',    nexus:true,  khan:true,  cb:true,   prep:false },
+  { feature:'No ads',              nexus:true,  khan:false, cb:false,  prep:false },
 ]
 
 /* ─── Testimonials ───────────────────────────────────────── */
@@ -236,7 +236,7 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ overflowX:'hidden' }}>
+    <div>
 
       {/* ── HERO ─────────────────────────────────────────── */}
       <section style={{ maxWidth:860, margin:'0 auto', padding:'clamp(56px,10vw,96px) 24px clamp(32px,5vw,56px)', textAlign:'center' }}>
@@ -445,51 +445,40 @@ export default function HomePage() {
       </section>
 
       {/* ── WHY WE'RE BETTER ──────────────────────────────── */}
-      <section style={{ background:'var(--sf)', borderTop:'1px solid var(--line)', borderBottom:'1px solid var(--line)', padding:'clamp(40px,7vw,72px) 16px' }}>
-        <div style={{ maxWidth:680, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:36 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--lime-dk)', textTransform:'uppercase', letterSpacing:'2px', marginBottom:10 }}>Why Nexus</div>
-            <h2 style={{ fontSize:'clamp(22px,4vw,34px)', fontWeight:900, letterSpacing:'-.8px', color:'var(--tx)' }}>What the others are missing</h2>
+      <section style={{ background:'var(--sf)', borderTop:'1px solid var(--line)', borderBottom:'1px solid var(--line)', padding:'clamp(40px,7vw,72px) 0' }}>
+        <div style={{ maxWidth:600, margin:'0 auto', padding:'0 16px' }}>
+          <div style={{ textAlign:'center', marginBottom:32 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--lime-dk)', textTransform:'uppercase', letterSpacing:'2px', marginBottom:8 }}>Why Nexus</div>
+            <h2 style={{ fontSize:'clamp(20px,4vw,32px)', fontWeight:900, letterSpacing:'-.6px', color:'var(--tx)' }}>What the others are missing</h2>
           </div>
 
-          {/* Table — rounded container, horizontal scroll only if truly needed */}
-          <div style={{ borderRadius:16, border:'1px solid var(--line)', overflow:'hidden' }}>
+          {/* width math: min phone = 320px. 320-32pad = 288. cols: 1fr+46+46+46+46=184fixed, so 1fr = 104px for text. ✔ */}
+          <div style={{ borderRadius:14, border:'1px solid var(--line)', overflow:'hidden', width:'100%' }}>
+
             {/* Header */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', background:'var(--sf2)', borderBottom:'2px solid var(--line2)', padding:'0 4px' }}>
-              <div style={{ padding:'11px 12px', fontSize:10, fontWeight:700, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'1px' }}>Feature</div>
-              {[
-                { label:'Nexus', color:'var(--lime-dk)' },
-                { label:'Khan',  color:'var(--tx3)' },
-                { label:'CB',    color:'var(--tx3)' },
-                { label:'Prep',  color:'var(--tx3)' },
-              ].map(h => (
-                <div key={h.label} style={{ padding:'11px 0', textAlign:'center', fontSize:11.5, fontWeight:800, color:h.color }}>{h.label}</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 46px 46px 46px 46px', background:'var(--sf2)', borderBottom:'2px solid var(--line2)' }}>
+              <div style={{ padding:'9px 10px', fontSize:9, fontWeight:700, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'1.2px' }}>Feature</div>
+              {[['Nexus','var(--lime-dk)'],['Khan','var(--tx3)'],['CB','var(--tx3)'],['Prep','var(--tx3)']].map(([lbl,col])=>(
+                <div key={lbl} style={{ padding:'9px 0', textAlign:'center' as const, fontSize:10, fontWeight:800, color:col }}>{lbl}</div>
               ))}
             </div>
+
             {/* Rows */}
-            {COMPARE.map((row, ri) => (
-              <div key={ri} style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', padding:'0 4px', borderBottom: ri < COMPARE.length-1 ? '1px solid var(--line)' : 'none', background: ri%2===0 ? 'var(--bg)' : 'var(--sf)' }}>
-                <div style={{ padding:'13px 12px', fontSize:13, color:'var(--tx2)', lineHeight:1.4, display:'flex', alignItems:'center' }}>{row.feature}</div>
-                {[row.nexus, row.khan, row.cb, row.prep].map((val, ci) => (
-                  <div key={ci} style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'13px 0' }}>
-                    {val ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke={ci===0 ? '#4ade80' : '#64748b'}
-                        strokeWidth={ci===0 ? '2.8' : '2'}
-                        strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                    ) : (
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                      </svg>
-                    )}
+            {COMPARE.map((row,ri)=>(
+              <div key={ri} style={{ display:'grid', gridTemplateColumns:'1fr 46px 46px 46px 46px', borderBottom:ri<COMPARE.length-1?'1px solid var(--line)':'none', background:ri%2===0?'var(--bg)':'var(--sf)' }}>
+                <div style={{ padding:'10px 10px', fontSize:11.5, color:'var(--tx2)', lineHeight:1.35, display:'flex', alignItems:'center' }}>{row.feature}</div>
+                {([row.nexus,row.khan,row.cb,row.prep] as boolean[]).map((val,ci)=>(
+                  <div key={ci} style={{ display:'flex', alignItems:'center', justifyContent:'center' as const }}>
+                    {val
+                      ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={ci===0?'#4ade80':'#94a3b8'} strokeWidth={ci===0?'3':'2.2'} strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    }
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <p style={{ textAlign:'center', fontSize:11.5, color:'var(--tx4)', marginTop:10 }}>CB = College Board · Prep = Prepscholar free tier</p>
+          <p style={{ textAlign:'center', fontSize:10.5, color:'var(--tx4)', marginTop:8 }}>CB = College Board · Prep = Prepscholar free tier</p>
         </div>
       </section>
 
