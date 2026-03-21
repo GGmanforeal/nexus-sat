@@ -633,7 +633,7 @@ export default function BankPage() {
               <div style={{display:'flex',gap:8,marginBottom:20,alignItems:'center',flexWrap:'wrap'}}>
                 {!submitted ? (
                   <>
-                    <button onClick={confirmAnswer} disabled={!sel}
+                    <button onClick={() => confirmAnswer()} disabled={!sel}
                       style={{padding:'10px 24px',background:'var(--lime)',color:'#060a0e',border:'none',borderRadius:10,fontSize:14,fontWeight:700,cursor:sel?'pointer':'default',opacity:sel?1:.35,transition:'opacity .15s'}}>
                       Confirm
                     </button>

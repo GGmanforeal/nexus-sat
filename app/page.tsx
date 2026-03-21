@@ -452,23 +452,30 @@ export default function HomePage() {
             <h2 style={{ fontSize:'clamp(24px,4vw,36px)', fontWeight:900, letterSpacing:'-.8px', color:'var(--tx)' }}>What the others are missing</h2>
           </div>
 
-          {/* Mobile-friendly: card list instead of table */}
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {/* Comparison table — fixed 5-column grid that works on all screen sizes */}
+          <div style={{ background:'var(--bg)', border:'1px solid var(--line)', borderRadius:18, overflow:'hidden' }}>
+            {/* Header */}
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', borderBottom:'1px solid var(--line)', background:'var(--sf)' }}>
+              <div style={{ padding:'12px 16px', fontSize:11, fontWeight:700, color:'var(--tx4)', textTransform:'uppercase', letterSpacing:'.5px' }}>Feature</div>
+              {[
+                { label:'Nexus', color:'var(--lime-dk)' },
+                { label:'Khan',  color:'var(--tx3)' },
+                { label:'CB',    color:'var(--tx3)' },
+                { label:'Prep',  color:'var(--tx3)' },
+              ].map(col => (
+                <div key={col.label} style={{ padding:'12px 4px', textAlign:'center', fontSize:12, fontWeight:700, color:col.color }}>{col.label}</div>
+              ))}
+            </div>
+            {/* Rows */}
             {COMPARE.map((row, ri) => (
-              <div key={ri} style={{ background:'var(--bg)', border:'1px solid var(--line)', borderRadius:14, padding:'14px 18px', display:'grid', gridTemplateColumns:'1fr auto auto auto auto', alignItems:'center', gap:'0 8px' }}>
-                <div style={{ fontSize:13.5, color:'var(--tx2)', paddingRight:12 }}>{row.feature}</div>
-                {[
-                  { label:'Nexus', val:row.nexus, highlight:true },
-                  { label:'Khan',  val:row.khan },
-                  { label:'CB',    val:row.cb },
-                  { label:'Prep',  val:row.prep },
-                ].map(col => (
-                  <div key={col.label} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, minWidth:40 }}>
-                    <span style={{ fontSize:9, fontWeight:700, color:col.highlight?'var(--lime-dk)':'var(--tx4)', textTransform:'uppercase', letterSpacing:'.3px' }}>{col.label}</span>
-                    {col.val ? (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={col.highlight?'var(--g-tx)':'var(--tx4)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <div key={ri} style={{ display:'grid', gridTemplateColumns:'1fr 72px 72px 72px 72px', alignItems:'center', borderBottom: ri < COMPARE.length-1 ? '1px solid var(--line)' : 'none' }}>
+                <div style={{ padding:'13px 16px', fontSize:13, color:'var(--tx2)', lineHeight:1.4 }}>{row.feature}</div>
+                {[row.nexus, row.khan, row.cb, row.prep].map((val, ci) => (
+                  <div key={ci} style={{ display:'flex', justifyContent:'center', alignItems:'center', padding:'13px 0' }}>
+                    {val ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ci===0?'var(--g-tx)':'var(--tx4)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     ) : (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--r-tx)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     )}
                   </div>
                 ))}
