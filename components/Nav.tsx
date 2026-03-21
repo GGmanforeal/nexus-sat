@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 
 const Icons = {
-  topics:   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
+  diagnostic:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+  topics:    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>,
   bank:     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
   tests:    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 12h6M9 17h4"/></svg>,
   stats:    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
@@ -22,8 +23,9 @@ const Icons = {
 
 // Desktop nav links (shown in top bar on large screens)
 const DESKTOP_LINKS = [
-  { href: '/topics',   label: 'Topics',        icon: 'topics'   as const },
-  { href: '/bank',     label: 'Question Bank', icon: 'bank'     as const },
+  { href: '/diagnostic', label: 'Diagnostic',    icon: 'diagnostic' as const },
+  { href: '/topics',     label: 'Topics',        icon: 'topics'     as const },
+  { href: '/bank',       label: 'Question Bank', icon: 'bank'       as const },
   { href: '/tests',    label: 'Tests',         icon: 'tests'    as const },
   { href: '/stats',    label: 'Stats',         icon: 'stats'    as const },
   { href: '/saved',    label: 'Saved',         icon: 'saved'    as const },
@@ -33,12 +35,11 @@ const DESKTOP_LINKS = [
 
 // Mobile bottom nav — icon + short label only
 const MOBILE_LINKS = [
-  { href: '/topics',   label: 'Topics',   icon: 'topics'   as const },
-  { href: '/bank',     label: 'Bank',     icon: 'bank'     as const },
-  { href: '/tests',    label: 'Tests',    icon: 'tests'    as const },
-  { href: '/stats',    label: 'Stats',    icon: 'stats'    as const },
-  { href: '/mistakes', label: 'Mistakes', icon: 'mistakes' as const },
-  { href: '/score',    label: 'Score',    icon: 'score'    as const },
+  { href: '/diagnostic', label: 'Test',     icon: 'diagnostic' as const },
+  { href: '/bank',       label: 'Bank',     icon: 'bank'       as const },
+  { href: '/stats',      label: 'Stats',    icon: 'stats'      as const },
+  { href: '/mistakes',   label: 'Mistakes', icon: 'mistakes'   as const },
+  { href: '/score',      label: 'Score',    icon: 'score'      as const },
 ]
 
 const SUPABASE_URL = 'https://cxeeqxxvuyrhlpindljk.supabase.co'
