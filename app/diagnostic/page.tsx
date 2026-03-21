@@ -1,7 +1,7 @@
 'use client'
 // app/diagnostic/page.tsx
 // 10-question diagnostic → instant score estimate → personalized study plan
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -32,7 +32,7 @@ const SvgTarget = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const SvgSeed   = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12"/><path d="M5 12a7 7 0 0 0 7-7 7 7 0 0 0 7 7"/></svg>
 const SvgBook   = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
 
-type ScoreIcon = () => JSX.Element
+type ScoreIcon = () => React.ReactElement
 function scoreLabel(total: number): { text: string; color: string; Icon: ScoreIcon } {
   if (total >= 1500) return { text: 'Exceptional', color: '#4ade80', Icon: SvgTrophy }
   if (total >= 1350) return { text: 'Strong',      color: '#60a5fa', Icon: SvgStar   }
