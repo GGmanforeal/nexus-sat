@@ -13,11 +13,36 @@ export function useSession(): SessionStore {
 }
 
 export function useStats() {
-  useSession() // subscribe to updates
+  useSession()
   return sessionStore.getStats()
 }
 
 export function useScore() {
   useSession()
   return sessionStore.getPredictedScore()
+}
+
+export function useGamification() {
+  useSession()
+  return sessionStore.getGamification()
+}
+
+export function useTimeStats() {
+  useSession()
+  return sessionStore.getTimeStats()
+}
+
+export function useMistakePatterns() {
+  useSession()
+  return sessionStore.getMistakePatterns()
+}
+
+export function useWeakSkills(topN = 5) {
+  useSession()
+  return sessionStore.getWeakSkills(topN)
+}
+
+export function useAdaptiveDifficulty() {
+  useSession()
+  return sessionStore.getAdaptiveDifficulty()
 }

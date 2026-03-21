@@ -43,6 +43,46 @@ function Clock() {
   return <span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--tx4)'}}>{t}</span>
 }
 
+/* ─── Practice Rush Timer ──────────────────────────────────── */
+const RUSH_SECS = 75 // 75s per question — SAT target pace
+
+function RushTimer({ active, onExpire, onTick }: { active: boolean; onExpire: () => void; onTick: (s: number) => void }) {
+  const [secs, setSecs] = useState(RUSH_SECS)
+  useEffect(() => {
+    if (!active) { setSecs(RUSH_SECS); return }
+    setSecs(RUSH_SECS)
+    const id = setInterval(() => {
+      setSecs(s => {
+        const next = s - 1
+        onTick(next)
+        if (next <= 0) { clearInterval(id); onExpire(); return 0 }
+        return next
+      })
+    }, 1000)
+    return () => clearInterval(id)
+  }, [active])
+
+  const pct = (secs / RUSH_SECS) * 100
+  const color = secs > 30 ? 'var(--g-tx)' : secs > 15 ? 'var(--a-tx)' : 'var(--r-tx)'
+  const urgent = secs <= 15
+
+  if (!active) return null
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px', borderRadius: 9,
+      background: urgent ? 'var(--r-bg)' : 'var(--sf2)',
+      border: `1px solid ${urgent ? 'var(--r-ln)' : 'var(--line2)'}`,
+      animation: urgent ? 'pulse 1s infinite' : 'none', flexShrink: 0 }}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <div style={{ width: 52, height: 4, background: 'var(--sf3)', borderRadius: 2, overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: 2, transition: 'width 1s linear, background .3s' }} />
+      </div>
+      <span style={{ fontFamily: 'var(--mono)', fontSize: 12, fontWeight: 700, color, minWidth: 24 }}>{secs}s</span>
+    </div>
+  )
+}
+
 /* ─── Nav button ───────────────────────────────────────────── */
 function NavBtn({onClick,disabled,children}:{onClick:()=>void;disabled:boolean;children:React.ReactNode}) {
   return (
@@ -92,6 +132,12 @@ export default function BankPage() {
   const [wrong, setWrong]         = useState(0)
   const [sessionDone, setSessionDone] = useState(false)
   const [flagged, setFlagged]     = useState<Set<number>>(new Set())
+  const [rushMode, setRushMode]   = useState(false)
+  const [rushActive, setRushActive] = useState(false)
+  const [rushExpired, setRushExpired] = useState(false)
+  const questionStartMs = useRef<number>(Date.now())
+  const rushModeRef = useRef(false)
+  useEffect(() => { rushModeRef.current = rushMode }, [rushMode])
 
   useEffect(() => {
     setSaved(new Set(Object.keys(sessionStore.get().saved)))
@@ -187,6 +233,10 @@ export default function BankPage() {
     const sorted = useShuffle ? [...items].sort(()=>Math.random()-.5) : items
     setQs(sorted); setLoadingQs(false)
     if (sorted.length > 0 && window.innerWidth < 700) setSideOpen(false)
+    if (sorted.length > 0) {
+      questionStartMs.current = Date.now()
+      if (rushModeRef.current) { setRushActive(true); setRushExpired(false) }
+    }
   }, [])
 
   const tryConnect = async (url: string, key: string, table: string) => {
@@ -212,20 +262,28 @@ export default function BankPage() {
     if (dom) loadQs(dom, actSkRef.current)
   }
 
-  const goTo = (i: number) => { setIdx(i); setSel(null); setSubmitted(false) }
+  const goTo = (i: number) => {
+    setIdx(i); setSel(null); setSubmitted(false); setRushExpired(false)
+    questionStartMs.current = Date.now()
+    if (rushMode) setRushActive(true)
+  }
 
-  const confirmAnswer = useCallback(() => {
-    if (!sel || submitted || !qs[idx]) return
+  const confirmAnswer = useCallback((forceAnswer?: string) => {
+    const answer = forceAnswer ?? sel
+    if (!answer || submitted || !qs[idx]) return
     const q = qs[idx]
-    const isCorrect = sel === q.correct_answer
+    const isCorrect = answer === q.correct_answer
+    const timeMs = Date.now() - questionStartMs.current
     setSubmitted(true)
+    setRushActive(false)
     if (isCorrect) setCorrect(c=>c+1); else setWrong(c=>c+1)
     sessionStore.addAnswer({
       questionId:q.id, section:q.section, domain:q.domain||'',
       skill:q.skill||'', difficulty:q.difficulty||'',
-      selectedAnswer:sel, correctAnswer:q.correct_answer, isCorrect,
+      selectedAnswer:answer, correctAnswer:q.correct_answer, isCorrect,
       explanation:q.explanation||'', question_text:q.question_text,
       choice_a:q.choice_a, choice_b:q.choice_b, choice_c:q.choice_c, choice_d:q.choice_d,
+      timeMs,
     })
     if (idx === qs.length-1) setTimeout(()=>setSessionDone(true),700)
   }, [sel,submitted,qs,idx])
@@ -336,6 +394,20 @@ export default function BankPage() {
               <span style={{position:'absolute',width:16,height:16,borderRadius:'50%',background:'white',top:2,left:shuffle?18:2,transition:'left .18s',boxShadow:'0 1px 4px rgba(0,0,0,.25)'}} />
             </button>
           </div>
+          {/* Practice Rush toggle */}
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderTop:'1px solid var(--line)'}}>
+            <div>
+              <div style={{fontSize:13,color:'var(--tx2)',display:'flex',alignItems:'center',gap:5}}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={rushMode?'var(--r-tx)':'var(--tx3)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span style={{fontWeight:600,color:rushMode?'var(--r-tx)':'var(--tx2)'}}>Practice Rush</span>
+              </div>
+              <div style={{fontSize:10.5,color:'var(--tx4)',marginTop:2}}>75s timer per question</div>
+            </div>
+            <button onClick={()=>setRushMode(m=>!m)}
+              style={{width:36,height:20,borderRadius:10,border:'none',background:rushMode?'#ef4444':'var(--sf3)',position:'relative',cursor:'pointer',transition:'background .2s',flexShrink:0}}>
+              <span style={{position:'absolute',width:16,height:16,borderRadius:'50%',background:'white',top:2,left:rushMode?18:2,transition:'left .18s',boxShadow:'0 1px 4px rgba(0,0,0,.25)'}} />
+            </button>
+          </div>
         </div>
 
         {/* Section tabs */}
@@ -398,6 +470,13 @@ export default function BankPage() {
                 {q.skill&&<><span style={{color:'var(--tx4)',flexShrink:0}}>›</span><span style={{color:'var(--tx2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{q.skill}</span></>}
               </>
             ) : <span>Select a topic from the sidebar</span>}
+
+          {/* Rush timer lives in top bar */}
+          <RushTimer
+            active={rushActive && !submitted}
+            onExpire={() => { setRushExpired(true); confirmAnswer(sel ?? '') }}
+            onTick={() => {}}
+          />
           </div>
 
           <Clock />
@@ -586,6 +665,14 @@ export default function BankPage() {
                   </svg>
                 </button>
               </div>
+
+              {/* Rush expired notice */}
+              {rushExpired && submitted && (
+                <div style={{borderRadius:10,padding:'10px 14px',marginBottom:12,background:'var(--r-bg)',border:'1px solid var(--r-ln)',display:'flex',alignItems:'center',gap:8,fontSize:13,color:'var(--r-tx)',fontWeight:600}}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Time&apos;s up! Practice answering in under 75 seconds.
+                </div>
+              )}
 
               {/* Explanation */}
               {submitted && (
