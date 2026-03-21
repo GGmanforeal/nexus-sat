@@ -1,4 +1,4 @@
-/* app/globals.css — Nexus design system v3 */
+/* app/globals.css — Nexus design system v4 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,56 +13,64 @@
   --font:      'DM Sans', sans-serif;
   --mono:      'DM Mono', monospace;
   --radius:    14px;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,.12);
-  --shadow-md: 0 8px 28px rgba(0,0,0,.22);
-  --shadow-lg: 0 16px 48px rgba(0,0,0,.35);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-md: 0 8px 28px rgba(0,0,0,.16);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.24);
   --transition: .15s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── Dark theme (default) ────────────────────────────────── */
+/* ── Dark theme ──────────────────────────────────────────── */
 :root, [data-theme="dark"] {
-  --bg:    #090d13;
-  --sf:    #0e1520;
-  --sf2:   #141c2a;
-  --sf3:   #1a2436;
-  --line:  rgba(255,255,255,.06);
-  --line2: rgba(255,255,255,.11);
-  --tx:    #eef3ff;
-  --tx2:   #a0b4cc;
-  --tx3:   #556880;
-  --tx4:   #334055;
-  --g-bg:  rgba(16,80,42,.25);
-  --g-ln:  rgba(74,222,128,.25);
+  --bg:    #0b0f17;
+  --sf:    #111827;
+  --sf2:   #1a2235;
+  --sf3:   #222d42;
+  --line:  rgba(255,255,255,.07);
+  --line2: rgba(255,255,255,.13);
+  --tx:    #f0f4ff;
+  --tx2:   #9fb3cc;
+  --tx3:   #5a7090;
+  --tx4:   #364556;
+  --g-bg:  rgba(16,80,42,.3);
+  --g-ln:  rgba(74,222,128,.3);
   --g-tx:  #4ade80;
-  --r-bg:  rgba(120,28,28,.25);
-  --r-ln:  rgba(248,113,113,.25);
+  --r-bg:  rgba(127,29,29,.3);
+  --r-ln:  rgba(248,113,113,.3);
   --r-tx:  #f87171;
-  --a-bg:  rgba(113,50,12,.25);
-  --a-ln:  rgba(251,191,36,.25);
+  --a-bg:  rgba(120,53,15,.3);
+  --a-ln:  rgba(251,191,36,.3);
   --a-tx:  #fbbf24;
+  --accent: #6366f1;
+  --accent-dim: rgba(99,102,241,.12);
 }
 
-/* ── Light theme ─────────────────────────────────────────── */
+/* ── Light theme — fully redesigned ─────────────────────── */
 [data-theme="light"] {
-  --bg:    #f2f5fa;
+  --bg:    #f8fafc;
   --sf:    #ffffff;
-  --sf2:   #edf1f8;
-  --sf3:   #e2e8f2;
-  --line:  #dde4f0;
-  --line2: #c8d2e2;
-  --tx:    #0c1525;
-  --tx2:   #2e4466;
-  --tx3:   #647ea0;
-  --tx4:   #95aac4;
+  --sf2:   #f1f5f9;
+  --sf3:   #e8edf4;
+  --line:  #e2e8f0;
+  --line2: #cbd5e1;
+  --tx:    #0f172a;
+  --tx2:   #334155;
+  --tx3:   #64748b;
+  --tx4:   #94a3b8;
   --g-bg:  #f0fdf4;
-  --g-ln:  #86efac;
-  --g-tx:  #15803d;
-  --r-bg:  #fef2f2;
-  --r-ln:  #fca5a5;
-  --r-tx:  #b91c1c;
+  --g-ln:  #bbf7d0;
+  --g-tx:  #16a34a;
+  --r-bg:  #fff1f2;
+  --r-ln:  #fecdd3;
+  --r-tx:  #dc2626;
   --a-bg:  #fffbeb;
-  --a-ln:  #fcd34d;
-  --a-tx:  #b45309;
+  --a-ln:  #fed7aa;
+  --a-tx:  #d97706;
+  --accent: #4f46e5;
+  --accent-dim: rgba(79,70,229,.08);
+  /* lime overrides for better contrast on white */
+  --lime:      #65a30d;
+  --lime-dk:   #4d7c0f;
+  --lime-dim:  rgba(101,163,13,.10);
 }
 
 /* ── Reset & base ────────────────────────────────────────── */
@@ -105,21 +113,17 @@ html, body {
   0%, 100% { border-color: var(--r-ln); box-shadow: 0 0 0 0 rgba(248,113,113,0); }
   50%       { border-color: var(--r-tx); box-shadow: 0 0 0 4px rgba(248,113,113,.12); }
 }
-@keyframes bounceIn {
-  0%   { transform: scale(.85); opacity: 0; }
-  60%  { transform: scale(1.05); }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes xpPop {
-  0%   { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-40px) scale(1.3); opacity: 0; }
+@keyframes timerTick {
+  0%   { opacity: 1; }
+  50%  { opacity: .7; }
+  100% { opacity: 1; }
 }
 
 /* ── Utility classes ─────────────────────────────────────── */
 .spinner {
   width: 28px; height: 28px;
   border: 2.5px solid var(--line2);
-  border-top-color: var(--lime);
+  border-top-color: var(--lime-dk);
   border-radius: 50%;
   animation: spin .65s linear infinite;
   flex-shrink: 0;
@@ -134,27 +138,18 @@ html, body {
 /* ── Mobile bottom nav ───────────────────────────────────── */
 .mob-bottom-nav { display: none; }
 
-/* ── Safe area support (iPhone notch) ───────────────────── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .mob-bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 700px) {
-  /* Show mobile bottom nav */
   .mob-bottom-nav { display: flex !important; }
-
-  /* Hide ALL desktop nav elements on mobile — only logo + theme/auth remain */
   .nav-links      { display: none !important; }
   .nav-divider    { display: none !important; }
-
-  /* On mobile hide both auth buttons — bottom nav handles navigation */
   .nav-auth-btns  { display: none !important; }
+  body            { padding-bottom: 64px; }
 
-  /* Body padding for bottom nav */
-  body { padding-bottom: 64px; }
-
-  /* Sidebar: slide in from left on mobile */
   .sidebar {
     position: fixed !important;
     left: -100% !important;
@@ -166,42 +161,20 @@ html, body {
     min-width: unset !important;
     max-width: 310px !important;
     box-shadow: 4px 0 28px rgba(0,0,0,.45) !important;
-    /* always show content when open */
     overflow: visible !important;
   }
-  .sidebar-open  { left: 0 !important; width: 82vw !important; min-width: unset !important; }
+  .sidebar-open  { left: 0 !important; }
   .mob-overlay   { display: block !important; }
 
-  /* Question padding tighter */
-  div[style*="maxWidth: 760"] { padding: 16px 14px 24px !important; }
-  div[style*="maxWidth: 900"] { padding: 20px 14px 24px !important; }
-
-  /* Stats 4-col → 2-col */
   div[style*="gridTemplateColumns: repeat(4"] {
     grid-template-columns: repeat(2,1fr) !important;
   }
-  /* 2-col grids → 1-col */
   div[style*="gridTemplateColumns: repeat(2,1fr)"],
   div[style*="gridTemplateColumns: repeat(2, 1fr)"] {
     grid-template-columns: 1fr !important;
   }
-
-  /* Landing page compare rows: feature label full width, icons inline */
-  .compare-row { flex-wrap: wrap; }
-
-  /* Hero tight on mobile */
-  section h1 { letter-spacing: -1px !important; }
-
-  /* Score promise pills stack */
-  div[style*="display:'inline-flex'"] { flex-direction: column !important; align-items: flex-start !important; }
-
-  /* Test run header */
-  div[style*="maxWidth: 900"] > div[style*="height: 46"] {
-    padding: 0 12px !important;
-  }
 }
 
 @media (max-width: 480px) {
-  /* Even more compact on small phones */
   .nav-wordmark { display: none; }
 }

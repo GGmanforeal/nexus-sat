@@ -35,7 +35,7 @@ const DESKTOP_LINKS = [
 
 // Mobile bottom nav — 5 slots max
 const MOBILE_LINKS = [
-  { href: '/',           label: 'Home',     icon: 'home'       as const },
+  { href: '/dashboard',   label: 'Home',     icon: 'home'       as const },
   { href: '/bank',       label: 'Bank',     icon: 'bank'       as const },
   { href: '/tests',      label: 'Tests',    icon: 'tests'      as const },
   { href: '/topics',     label: 'Topics',   icon: 'topics'     as const },
@@ -114,7 +114,7 @@ export function Nav() {
       {/* ── TOP NAV ────────────────────────────────────── */}
       <nav style={{ height:'var(--nav-h)', display:'flex', alignItems:'center', padding:'0 14px', borderBottom:'1px solid var(--line)', background:'var(--sf)', position:'fixed', top:0, left:0, right:0, zIndex:400 }}>
 
-        <Link href="/" style={{ display:'flex', alignItems:'center', marginRight:10, textDecoration:'none', flexShrink:0 }}>
+        <Link href="/dashboard" style={{ display:'flex', alignItems:'center', marginRight:10, textDecoration:'none', flexShrink:0 }}>
           <NexusLogo />
         </Link>
 
